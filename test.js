@@ -2,29 +2,26 @@ console.log('start');
 
 import puppeteer from 'puppeteer';
 import schedule from 'node-schedule';
-import axios from 'axios';
-import FormData from 'form-data';
-import sharp from 'sharp';
-import fs from 'fs';
 
-import dotenv from 'dotenv';
+import {
+    STREET,
+    HOUSE,
+    PHOTO_WHITE_BORDER_SIZE,
+    DETEK_LINK,
+    UPDATE_DATE_SPLITER,
+    HIDE_INFO_TEXT,
+} from './globals.js';
 
+import {
+    sendPhoto,
+    sendMessage,
+    editMessage,
+} from './functions/telegramBotFunctions.js';
 
-dotenv.config();
-
-
-const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-const CHAT_ID = process.env.CHAT_ID;
-const STREET = process.env.STREET;
-const HOUSE = process.env.HOUSE;
-
-const PHOTO_WHITE_BORDER_SIZE = 20;
-
-const DETEK_LINK = 'https://www.dtek-kem.com.ua/ua/shutdowns';
-
-const UPDATE_DATE_SPLITER = '<span class="_update_info">Дата оновлення інформації</span> – ';
-
-const HIDE_INFO_TEXT = `Якщо в даний момент у вас відсутнє світло, імовірно виникла аварійна ситуація, або діють стабілізаційні або екстрені відключення. Просимо перевірити інформацію через 15 хвилин, саме стільки часу потрібно для оновлення даних на сайті.`
+import {
+    addWhiteBorderToImage,
+    delay,
+} from './helpersFunctions.js';
 
 let lastUpdateDate = '00:00 00.00.0000';
 let thsStartUpdateDate = '00:00 00.00.0000';
@@ -40,14 +37,6 @@ const browserParams =
 
 
 /**
- * Дает задержку в милисикундах через Promise
- * @param {number} ms - задержка в милисекундах
- */
-function delay(ms) {
-    return new Promise(res => setTimeout(res, ms));
-}
-
-/**
  * Получает текст с сайта детек (необходимы browser и browserParams)
  * @param {string} street - улица полностью как в детеке
  * @param {string} house - номер дома полностью
@@ -55,23 +44,27 @@ function delay(ms) {
  * @returns {string} - текст про отключение электроэнерии
  */
 async function getDetekData(street, house, typeDelay = 120) {
+    async function clickElement(selector) {
+        await page.waitForSelector(selector);
+        await page.$eval(selector, el => el.click());
+    }
+    async function typeText(selector, text) {
+        await page.waitForSelector(selector);
+        await page.type(selector, text, { delay: typeDelay });
+    }
     async function closeModal() {
         try{
-        await page.waitForSelector('.modal__close');
-        await page.$eval('.modal__close', el => el.click());
+            await clickElement('.modal__close');
             /* console.log('close modal'); */
         }
         catch { /*console.log('no modal');*/ }
     }
     async function getInfoText() {
-        await page.waitForSelector('#street');
-        await page.type('#street', street, { delay: typeDelay });
-        await page.waitForSelector('#streetautocomplete-list>div');
-        await page.$eval('#streetautocomplete-list>div', el => el.click());
-        await page.waitForSelector('#house_num:not([disabled])');
-        await page.type('#house_num', house, { delay: typeDelay });
-        await page.waitForSelector('#house_numautocomplete-list>div');
-        await page.$eval('#house_numautocomplete-list>div', el => el.click());
+        await typeText('#street', street);
+        await clickElement('#streetautocomplete-list>div');
+        await typeText('#house_num:not([disabled])', house);
+        await clickElement('#house_numautocomplete-list>div');
+
         await page.waitForSelector('#showCurOutage');
 
         return await page.$eval('#showCurOutage>p', el => el.innerHTML.replaceAll('<br>', '\n'));
@@ -82,109 +75,35 @@ async function getDetekData(street, house, typeDelay = 120) {
     await page.setViewport({ width: 1080, height: 1024 });
     await page.goto(DETEK_LINK);
 
-    // await closeModal();
+    await delay(500);
+    await closeModal();
     const textInfo = await getInfoText();
-    await closeModal(); 
-
+    await closeModal(); // на случай если модалка выскочит снова
+    await delay(500);
 
     // Ждём элемент
     const element = await page.waitForSelector('#discon-fact');
     // Делаем скриншот в буфер (без сохранения на диск)
     const screenshotBuffer = await element.screenshot();
+    const htmlFragment = await page.$eval('#discon-fact', el => el.innerHTML);
+
+    await page.waitForSelector('.dates .date:not(.active)');
+    await page.$eval('.dates .date:not(.active)', el => el.click());
+
+    const element2 = await page.waitForSelector('#discon-fact');
+    // Делаем скриншот в буфер (без сохранения на диск)
+    const screenshotBuffer2 = await element2.screenshot();
+    const htmlFragment2 = await page.$eval('#discon-fact', el => el.innerHTML);
 
     // временно убрано для тестов
     // await page.close();
 
-    return [textInfo, screenshotBuffer];
+    return [textInfo, screenshotBuffer, htmlFragment, screenshotBuffer2, htmlFragment2];
 }
-
-
-/**
- * Добавляет белые края к изображению из буфера
- * @param {Buffer} imageBuffer - исходное изображение
- * @param {number} padding - размер отступа (px)
- * @returns {Buffer} - новое изображение с белыми краями
- */
-async function addWhiteBorder(imageBuffer, padding = 20) {
-  const img = sharp(imageBuffer);
-
-  // Получаем размеры исходного изображения
-  const metadata = await img.metadata();
-
-  // Создаём белый фон большего размера
-  const extended = await img
-    .extend({
-      top: padding,
-      bottom: padding,
-      left: padding,
-      right: padding,
-      background: { r: 255, g: 255, b: 255, alpha: 1 }, // белый цвет
-    })
-    .toBuffer();
-
-  return extended;
-}
-
-/**
- * Отправляет фотографию в телеграмм
- * @param {Buffer} photoBuffer - улица полностью как в детеке
- * @param {string} filename - имя файла фотографии
- * @returns {object} - response telegram api
- */
-async function sendPhoto(photoBuffer, filename = 'image.jpg') {
-    const formData = new FormData();
-    formData.append('chat_id', CHAT_ID);
-    formData.append('photo', photoBuffer, { filename });
-    await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, formData, {
-        headers: formData.getHeaders(),
-    });
-}
-
-
-/**
- * Отправляет текстовое сообщение в телеграмм
- * @param {string} text - улица полностью как в детеке
- * @returns {object} - response telegram api
- */
-async function sendMessage(text) {
-    const formData = new FormData();
-    formData.append('chat_id', CHAT_ID);
-    formData.append('text', text);
-    // formData.append('parse_mode', 'MarkdownV2');
-    // formData.append('parse_mode', 'HTML');
-    
-    console.log(text);
-    return {};
-    return await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, formData, {
-        headers: formData.getHeaders(),
-    });
-}
-
-/**
- * Редактирует ранее отправленное текстовое сообщение в телеграмм
- * @param {number} id - улица полностью как в детеке
- * @param {string} text - улица полностью как в детеке
- * @returns {object} - response telegram api
- */
-async function editMessage(id, text) {
-    const formData = new FormData();
-    formData.append('chat_id', CHAT_ID);
-    formData.append('text', text);
-    formData.append('message_id', id);
-    // formData.append('parse_mode', 'MarkdownV2');
-    // formData.append('parse_mode', 'HTML');
-    console.log(id, text);
-    return {};
-    return await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/editMessageText`, formData, {
-        headers: formData.getHeaders(),
-    });
-}
-
-
 
 async function main() {
     console.log('main start');
-    const [textInfoFull, screenshotBuffer] = await getDetekData(STREET, HOUSE);
+    const [textInfoFull, screenshotBuffer, htmlFragment, screenshotBuffer2, htmlFragment2] = await getDetekData(STREET, HOUSE);
     const [textInfo, nowUpdateDate] = [
         ...textInfoFull.split(UPDATE_DATE_SPLITER),
         '00:00 00.00.0000'
@@ -224,10 +143,10 @@ async function main() {
         }
     }
 
-    const photoWithBorder = await addWhiteBorder(screenshotBuffer, PHOTO_WHITE_BORDER_SIZE);
-    fs.writeFileSync('screenshot.png', photoWithBorder);
-
+    const photoWithBorder = await addWhiteBorderToImage(screenshotBuffer, PHOTO_WHITE_BORDER_SIZE);
+    const photoWithBorder2 = await addWhiteBorderToImage(screenshotBuffer2, PHOTO_WHITE_BORDER_SIZE);
     sendPhoto(photoWithBorder);
+    sendPhoto(photoWithBorder2);
 
     console.log('main end');
 }
