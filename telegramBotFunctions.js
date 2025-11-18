@@ -35,8 +35,8 @@ async function sendMessage(text) {
     // formData.append('parse_mode', 'MarkdownV2');
     // formData.append('parse_mode', 'HTML');
     
-    console.log(text);
-    return {};
+    // console.log(text);
+    // return {};
     return await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, formData, {
         headers: formData.getHeaders(),
     });
@@ -55,8 +55,9 @@ async function editMessage(id, text) {
     formData.append('message_id', id);
     // formData.append('parse_mode', 'MarkdownV2');
     // formData.append('parse_mode', 'HTML');
-    console.log(id, text);
-    return {};
+    
+    // console.log(id, text);
+    // return {};
     return await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/editMessageText`, formData, {
         headers: formData.getHeaders(),
     });
