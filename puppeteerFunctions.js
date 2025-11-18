@@ -9,6 +9,8 @@ import {
     delay,
 } from './helpersFunctions.js';
 
+import { puppeteerFunctionsCreator } from './puppyteerHelperFunctionsCreator.js';
+
 
 let browser = null;
 
@@ -16,38 +18,6 @@ const browserParams =
     (process.platform === 'win32') //на виндовс отображем бразур для удобного тестирования
     ? { headless: false, defaultViewport: null, args: ['--start-maximized'] }
     : { args: ['--no-sandbox', '--disable-setuid-sandbox'] };
-
-
-
-function puppeteerFunctionsCreator(page, typeDelay) {
-    return {
-        async clickElement(selector) {
-            await page.waitForSelector(selector);
-            await page.$eval(selector, el => el.click());
-        },
-        async nativeClickElement(selector) {
-            const element = await page.$(selector);
-            const box = await element.boundingBox(); 
-            await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
-        },
-        async typeText(selector, text) {
-            await page.waitForSelector(selector);
-            await page.type(selector, text, { delay: typeDelay });
-        },
-        async getHTMLText(selector) {
-            await page.waitForSelector(selector);
-            return await page.$eval(selector, el => el.innerHTML);
-        },
-        async getScreenshotOfElement(selector) {
-            await page.waitForSelector(selector);
-            const element = await page.$(selector);
-            return await element.screenshot();
-        }
-    }
-
-}
-
-
 
 /**
  * Получает текст с сайта детек (необходимы browser и browserParams)
@@ -103,16 +73,28 @@ async function getDetekData(street, house, typeDelay = TYPE_DELAY) {
     const screenshotBuffer = await getScreenshotOfElement('#discon-fact');
     const htmlFragment = await getHTMLText('#discon-fact');
 
-
     await clickElement('.dates .date:not(.active)');
 
     const screenshotBuffer2 = await getScreenshotOfElement('#discon-fact');
     const htmlFragment2 = await getHTMLText('#discon-fact');
 
-    // временно убрано для тестов
-    // await page.close();
+    // временно комментировать для тестов
+    await page.close();
 
-    return [textInfo, screenshotBuffer, htmlFragment, screenshotBuffer2, htmlFragment2];
+    return {
+        textInfoFull: textInfo, 
+        graphics: [
+            {
+                screenshotBuffer: screenshotBuffer,
+                htmlFragment: htmlFragment,
+            },
+            {
+                screenshotBuffer: screenshotBuffer2,
+                htmlFragment: htmlFragment2,
+            },
+        ],
+
+    };
 }
 
 export {

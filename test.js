@@ -30,11 +30,13 @@ let thisStartUpdateDate = '00:00 00.00.0000';
 let lastTextInfo = '';
 let lastMessageId = 0;
 
+const lastHTMLFragments = ['', ''];
+
 
 
 async function main() {
     console.log('main start');
-    const [textInfoFull, screenshotBuffer, htmlFragment, screenshotBuffer2, htmlFragment2] = await getDetekData(STREET, HOUSE);
+    const {textInfoFull, graphics} = await getDetekData(STREET, HOUSE);
     const [textInfo, nowUpdateDate] = [
         ...textInfoFull.split(UPDATE_DATE_SPLITER),
         '00:00 00.00.0000'
@@ -74,10 +76,17 @@ async function main() {
         }
     }
 
-    const photoWithBorder = await addWhiteBorderToImage(screenshotBuffer, PHOTO_WHITE_BORDER_SIZE);
-    const photoWithBorder2 = await addWhiteBorderToImage(screenshotBuffer2, PHOTO_WHITE_BORDER_SIZE);
-    sendPhoto(photoWithBorder);
-    sendPhoto(photoWithBorder2);
+    graphics.forEach(async ({screenshotBuffer, htmlFragment}, index) => {
+        if (htmlFragment === lastHTMLFragments[index]) {
+            console.log('skip photo send index', index);
+            return;
+        }
+        const photoWithBorder = await addWhiteBorderToImage(screenshotBuffer, PHOTO_WHITE_BORDER_SIZE);
+        await sendPhoto(photoWithBorder, `detek_${index}_${Date.now()}.png`);
+        lastHTMLFragments[index] = htmlFragment;
+        console.log('send photo index', index);
+    });
+    
 
     console.log('main end');
 }
@@ -85,6 +94,8 @@ async function main() {
 await main();
 
 
-
+const rule = new schedule.RecurrenceRule();
+rule.minute = new schedule.Range(0, 59, 5); //кожні (остання цифра) хвилин
+const medocJob = schedule.scheduleJob(rule, main);
 
 console.log('end');
