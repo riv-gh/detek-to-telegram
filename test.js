@@ -1,16 +1,12 @@
 console.log('start');
 
-
-// const puppeteer = require('puppeteer');
-// const schedule = require('node-schedule');
-// const axios = require('axios');
-// const FormData = require('form-data');
-// const dotenv = require('dotenv');
-
 import puppeteer from 'puppeteer';
 import schedule from 'node-schedule';
 import axios from 'axios';
 import FormData from 'form-data';
+import sharp from 'sharp';
+import fs from 'fs';
+
 import dotenv from 'dotenv';
 
 
@@ -22,7 +18,7 @@ const CHAT_ID = process.env.CHAT_ID;
 const STREET = process.env.STREET;
 const HOUSE = process.env.HOUSE;
 
-
+const PHOTO_WHITE_BORDER_SIZE = 20;
 
 const DETEK_LINK = 'https://www.dtek-kem.com.ua/ua/shutdowns';
 
@@ -91,10 +87,57 @@ async function getDetekData(street, house, typeDelay = 120) {
     await closeModal(); 
 
 
+    // Ждём элемент
+    const element = await page.waitForSelector('#discon-fact');
+    // Делаем скриншот в буфер (без сохранения на диск)
+    const screenshotBuffer = await element.screenshot();
+
     // временно убрано для тестов
     // await page.close();
 
-    return textInfo;
+    return [textInfo, screenshotBuffer];
+}
+
+
+/**
+ * Добавляет белые края к изображению из буфера
+ * @param {Buffer} imageBuffer - исходное изображение
+ * @param {number} padding - размер отступа (px)
+ * @returns {Buffer} - новое изображение с белыми краями
+ */
+async function addWhiteBorder(imageBuffer, padding = 20) {
+  const img = sharp(imageBuffer);
+
+  // Получаем размеры исходного изображения
+  const metadata = await img.metadata();
+
+  // Создаём белый фон большего размера
+  const extended = await img
+    .extend({
+      top: padding,
+      bottom: padding,
+      left: padding,
+      right: padding,
+      background: { r: 255, g: 255, b: 255, alpha: 1 }, // белый цвет
+    })
+    .toBuffer();
+
+  return extended;
+}
+
+/**
+ * Отправляет фотографию в телеграмм
+ * @param {Buffer} photoBuffer - улица полностью как в детеке
+ * @param {string} filename - имя файла фотографии
+ * @returns {object} - response telegram api
+ */
+async function sendPhoto(photoBuffer, filename = 'image.jpg') {
+    const formData = new FormData();
+    formData.append('chat_id', CHAT_ID);
+    formData.append('photo', photoBuffer, { filename });
+    await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, formData, {
+        headers: formData.getHeaders(),
+    });
 }
 
 
@@ -141,7 +184,7 @@ async function editMessage(id, text) {
 
 async function main() {
     console.log('main start');
-    const textInfoFull = await getDetekData(STREET, HOUSE);
+    const [textInfoFull, screenshotBuffer] = await getDetekData(STREET, HOUSE);
     const [textInfo, nowUpdateDate] = [
         ...textInfoFull.split(UPDATE_DATE_SPLITER),
         '00:00 00.00.0000'
@@ -180,6 +223,12 @@ async function main() {
             console.log('send message', lastMessageId);
         }
     }
+
+    const photoWithBorder = await addWhiteBorder(screenshotBuffer, PHOTO_WHITE_BORDER_SIZE);
+    fs.writeFileSync('screenshot.png', photoWithBorder);
+
+    sendPhoto(photoWithBorder);
+
     console.log('main end');
 }
 

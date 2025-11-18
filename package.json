@@ -16,6 +16,7 @@
     "dotenv": "^17.2.3",
     "form-data": "^4.0.5",
     "node-schedule": "^2.1.1",
-    "puppeteer": "^24.30.0"
+    "puppeteer": "^24.30.0",
+    "sharp": "^0.34.5"
   }
 }
