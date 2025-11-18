@@ -1,13 +1,11 @@
 console.log('start');
 
-import puppeteer from 'puppeteer';
 import schedule from 'node-schedule';
 
 import {
     STREET,
     HOUSE,
     PHOTO_WHITE_BORDER_SIZE,
-    DETEK_LINK,
     UPDATE_DATE_SPLITER,
     HIDE_INFO_TEXT,
 } from './globals.js';

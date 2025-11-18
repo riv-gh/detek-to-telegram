@@ -7,6 +7,7 @@ const STREET = process.env.STREET;
 const HOUSE = process.env.HOUSE;
 
 const PHOTO_WHITE_BORDER_SIZE = 20;
+const TYPE_DELAY = 120;
 
 const DETEK_LINK = 'https://www.dtek-kem.com.ua/ua/shutdowns';
 
@@ -20,6 +21,7 @@ export {
     STREET,
     HOUSE,
     PHOTO_WHITE_BORDER_SIZE,
+    TYPE_DELAY,
     DETEK_LINK,
     UPDATE_DATE_SPLITER,
     HIDE_INFO_TEXT,
