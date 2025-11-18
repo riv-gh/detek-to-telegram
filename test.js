@@ -28,9 +28,7 @@ const DETEK_LINK = 'https://www.dtek-kem.com.ua/ua/shutdowns';
 
 const UPDATE_DATE_SPLITER = '<span class="_update_info">Дата оновлення інформації</span> – ';
 
-const HIDE_INFO_TEXT = `
- Якщо наразі у Вас немає світла, імовірно, виникла аварійна ситуація та інформація з'явиться на сайті трошки пізніше.
-Якщо світла немає тривалий час – прохання оформити заявку нижче.`
+const HIDE_INFO_TEXT = `Якщо в даний момент у вас відсутнє світло, імовірно виникла аварійна ситуація, або діють стабілізаційні або екстрені відключення. Просимо перевірити інформацію через 15 хвилин, саме стільки часу потрібно для оновлення даних на сайті.`
 
 let lastUpdateDate = '00:00 00.00.0000';
 let thsStartUpdateDate = '00:00 00.00.0000';
@@ -60,32 +58,38 @@ function delay(ms) {
  * @param {number} typeDelay - задержка между нажатиями при "печати" (120 по умолчанию)
  * @returns {string} - текст про отключение электроэнерии
  */
-async function getDetekText(street, house, typeDelay = 120) {
+async function getDetekData(street, house, typeDelay = 120) {
+    async function closeModal() {
+        try{
+        await page.waitForSelector('.modal__close');
+        await page.$eval('.modal__close', el => el.click());
+            /* console.log('close modal'); */
+        }
+        catch { /*console.log('no modal');*/ }
+    }
+    async function getInfoText() {
+        await page.waitForSelector('#street');
+        await page.type('#street', street, { delay: typeDelay });
+        await page.waitForSelector('#streetautocomplete-list>div');
+        await page.$eval('#streetautocomplete-list>div', el => el.click());
+        await page.waitForSelector('#house_num:not([disabled])');
+        await page.type('#house_num', house, { delay: typeDelay });
+        await page.waitForSelector('#house_numautocomplete-list>div');
+        await page.$eval('#house_numautocomplete-list>div', el => el.click());
+        await page.waitForSelector('#showCurOutage');
+
+        return await page.$eval('#showCurOutage>p', el => el.innerHTML.replaceAll('<br>', '\n'));
+    }
+
     browser = browser || await puppeteer.launch(browserParams);
     const page = await browser.newPage();
     await page.setViewport({ width: 1080, height: 1024 });
     await page.goto(DETEK_LINK);
 
-    // проверяем наличие модального окна 
-    try{
-        await page.waitForSelector('.modal__close');
-        await page.$eval('.modal__close', el => el.click());
-        /* console.log('close modal'); */
-    }
-    catch { /*console.log('no modal');*/ }
+    // await closeModal();
+    const textInfo = await getInfoText();
+    await closeModal(); 
 
-    await page.waitForSelector('#street');
-    await page.type('#street', street, { delay: typeDelay });
-    await page.waitForSelector('#streetautocomplete-list>div');
-    await page.$eval('#streetautocomplete-list>div', el => el.click());
-    await page.waitForSelector('#house_num:not([disabled])');
-    await page.type('#house_num', house, { delay: typeDelay });
-    await page.waitForSelector('#house_numautocomplete-list>div');
-    await page.$eval('#house_numautocomplete-list>div', el => el.click());
-    await page.waitForSelector('#showCurOutage');
-
-
-    const textInfo = await page.$eval('#showCurOutage>p', el => el.innerHTML.replaceAll('<br>', '\n'));
 
     // временно убрано для тестов
     // await page.close();
@@ -104,8 +108,31 @@ async function sendMessage(text) {
     formData.append('chat_id', CHAT_ID);
     formData.append('text', text);
     // formData.append('parse_mode', 'MarkdownV2');
-    formData.append('parse_mode', 'HTML');
+    // formData.append('parse_mode', 'HTML');
+    
+    console.log(text);
+    return {};
     return await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, formData, {
+        headers: formData.getHeaders(),
+    });
+}
+
+/**
+ * Редактирует ранее отправленное текстовое сообщение в телеграмм
+ * @param {number} id - улица полностью как в детеке
+ * @param {string} text - улица полностью как в детеке
+ * @returns {object} - response telegram api
+ */
+async function editMessage(id, text) {
+    const formData = new FormData();
+    formData.append('chat_id', CHAT_ID);
+    formData.append('text', text);
+    formData.append('message_id', id);
+    // formData.append('parse_mode', 'MarkdownV2');
+    // formData.append('parse_mode', 'HTML');
+    console.log(id, text);
+    return {};
+    return await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/editMessageText`, formData, {
         headers: formData.getHeaders(),
     });
 }
@@ -114,7 +141,7 @@ async function sendMessage(text) {
 
 async function main() {
     console.log('main start');
-    const textInfoFull = await getDetekText(STREET, HOUSE);
+    const textInfoFull = await getDetekData(STREET, HOUSE);
     const [textInfo, nowUpdateDate] = [
         ...textInfoFull.split(UPDATE_DATE_SPLITER),
         '00:00 00.00.0000'
@@ -128,8 +155,9 @@ async function main() {
                 textInfo
                     // .replaceAll('<strong>','*')
                     // .replaceAll('</strong>','*')
-                    // .replace(/<[^>]*>/gi, '')
-                    .replace(HIDE_INFO_TEXT, '') + 
+                    .replace(/<[^>]*>/gi, '')
+                    // .replace(HIDE_INFO_TEXT, '') + 
+                    +
                 'Данні оновлено: \n' + 
                 thsStartUpdateDate + '\n' + nowUpdateDate
             );
@@ -141,7 +169,8 @@ async function main() {
                     // .replaceAll('<strong>','*')
                     // .replaceAll('</strong>','*')
                     .replace(/<[^>]*>/gi, '')
-                    .replace(HIDE_INFO_TEXT, '') + 
+                    // .replace(HIDE_INFO_TEXT, '') + 
+                    +
                 'Данні оновлено: \n' + 
                 nowUpdateDate
             );
