@@ -7,7 +7,9 @@ import {
     HOUSE,
     PHOTO_WHITE_BORDER_SIZE,
     UPDATE_DATE_SPLITER,
-    // HIDE_INFO_TEXT,
+    HIDE_INFO_TEXT,
+    NOT_SHUTDONW_TEXT,
+    PREFIX_EMOJI,
 } from './globals.js';
 
 import {
@@ -18,7 +20,8 @@ import {
 
 import {
     addWhiteBorderToImage,
-    delay,
+    escapeMarkdownV2,
+    highlightDatesMarkdown,
 } from './helpersFunctions.js';
 
 import {
@@ -31,8 +34,6 @@ let lastTextInfo = '';
 let lastMessageId = 0;
 
 const lastStateClassLists = ['', ''];
-
-
 
 async function main() {
     console.log('main start');
@@ -47,27 +48,32 @@ async function main() {
         if (textInfo === lastTextInfo && lastMessageId) {
             await editMessage(
                 lastMessageId,
-                textInfo
-                    // .replaceAll('<strong>','*')
-                    // .replaceAll('</strong>','*')
-                    .replace(/<[^>]*>/gi, '')
-                    // .replace(HIDE_INFO_TEXT, '') + 
-                    +
-                'Данні оновлено: \n' + 
-                thisStartUpdateDate + '\n' + nowUpdateDate
+                highlightDatesMarkdown(
+                    textInfo.includes(NOT_SHUTDONW_TEXT)
+                    ? PREFIX_EMOJI.NOT_SHUTDONW
+                    : PREFIX_EMOJI.SHUTDOWN +
+                    textInfo.replace(HIDE_INFO_TEXT, '')
+                ) + 
+                escapeMarkdownV2(
+                    'Данні оновлено: \n' + 
+                    thisStartUpdateDate + '\n' + 
+                    nowUpdateDate
+                )
             );
             console.log('edit message', lastMessageId)
         }
         else {
             const messageReturn = await sendMessage(
-                textInfo
-                    // .replaceAll('<strong>','*')
-                    // .replaceAll('</strong>','*')
-                    .replace(/<[^>]*>/gi, '')
-                    // .replace(HIDE_INFO_TEXT, '') + 
-                    +
-                'Данні оновлено: \n' + 
-                nowUpdateDate
+                highlightDatesMarkdown(
+                    textInfo.includes(NOT_SHUTDONW_TEXT)
+                    ? PREFIX_EMOJI.NOT_SHUTDONW
+                    : PREFIX_EMOJI.SHUTDOWN +
+                    textInfo.replace(HIDE_INFO_TEXT, '')
+                ) + 
+                escapeMarkdownV2(
+                    'Данні оновлено: \n' + 
+                    nowUpdateDate
+                )
             );
             lastMessageId = messageReturn?.data?.result?.message_id || 0;
             lastTextInfo = textInfo;
@@ -77,7 +83,6 @@ async function main() {
     }
 
     graphics.forEach(async ({screenshotBuffer, screenshotCaptionText, stateClassList}, index) => {
-        console.log('stateClassList', stateClassList);
         if (stateClassList === lastStateClassLists[index]) {
             console.log('skip photo send index', index);
             return;
@@ -88,7 +93,11 @@ async function main() {
             return;
         }
         const photoWithBorder = await addWhiteBorderToImage(screenshotBuffer, PHOTO_WHITE_BORDER_SIZE);
-        await sendPhoto(photoWithBorder, screenshotCaptionText, `detek_${index}_${Date.now()}.png`);
+        await sendPhoto(
+            photoWithBorder,
+            PREFIX_EMOJI.LIGHTNING + screenshotCaptionText,
+            `detek_${index}_${Date.now()}.png`
+        );
         lastStateClassLists[index] = stateClassList;
         console.log('send photo index', index);
     });

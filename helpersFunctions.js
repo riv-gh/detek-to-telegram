@@ -35,7 +35,49 @@ function delay(ms) {
 }
 
 
+/**
+ * Экранирует специальные символы MarkdownV2 в тексте
+ * @param {string} text - входящий текст
+ * @returns {string} - текст с экранированными символами
+ */
+function escapeMarkdownV2(text) {
+  // список спецсимволов, которые нужно экранировать
+  const escapeChars = [
+    '_', '*', '[', ']', '(', ')', '~', '`', '>', '#',
+    '+', '-', '=', '|', '{', '}', '.', '!'
+  ];
+
+  let escaped = text;
+  escapeChars.forEach(char => {
+    const regex = new RegExp(`\\${char}`, 'g'); // ищем все вхождения
+    escaped = escaped.replace(regex, `\\${char}`); // добавляем обратный слэш
+  });
+
+  return escaped;
+}
+
+/**
+ * віделение по регулярному выражению в тексте для MarkdownV2
+ * @param {string} inputText - входящий текст
+ * @param {RegExp} [regex=/\b([0-2]\d:[0-5]\d)\b/g] - регулярное выражение для поиска
+ * (по умолчанию время в формате HH:MM)
+ * @param {string} [highlightTpl='__*$1*__'] - шаблон для выделения (по умолчанию __*$1*__)
+ * @returns {string} - текст с выделенными данными в формате MarkdownV2
+ */
+function highlightDatesMarkdown(
+  inputText,
+  regex = /\b([0-2]\d:[0-5]\d)\b/g,
+  highlightTpl = '__*$1*__'
+) {
+  // Заменяем найденные совпадения на выделенные в Markdown
+  return escapeMarkdownV2(inputText).replace(regex, highlightTpl);
+}
+
+
+
 export {
     addWhiteBorderToImage,
     delay,
+    escapeMarkdownV2,
+    highlightDatesMarkdown,
 };
