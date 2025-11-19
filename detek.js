@@ -1,4 +1,4 @@
-console.log('start');
+// console.log('start');
 
 import schedule from 'node-schedule';
 
@@ -44,6 +44,18 @@ const lastStateClassLists = ['', ''];
  */
 function prepareMessageText(textInfo, nowUpdateDate, isEdit = false) {
     return (
+        // highlightDatesMarkdown(
+        //     textInfo.includes(NOT_SHUTDONW_TEXT)
+        //     ? PREFIX_EMOJI.NOT_SHUTDONW
+        //     : PREFIX_EMOJI.SHUTDOWN +
+        //     textInfo.replace(HIDE_INFO_TEXT, '')
+        // ) +
+        // escapeMarkdownV2(
+        //     'Данні оновлено: \n' + 
+        //     isEdit ? `${thisStartUpdateDate}\n` : '' + 
+        //     nowUpdateDate
+        // )
+
         highlightDatesMarkdown(
             textInfo.includes(NOT_SHUTDONW_TEXT)
             ? PREFIX_EMOJI.NOT_SHUTDONW
@@ -52,20 +64,23 @@ function prepareMessageText(textInfo, nowUpdateDate, isEdit = false) {
         ) +
         escapeMarkdownV2(
             'Данні оновлено: \n' + 
-            isEdit ? `${thisStartUpdateDate}\n` : '' + 
+            (isEdit ? `${thisStartUpdateDate}\n` : '') +
             nowUpdateDate
         )
     );
 }
 
 async function main() {
-    console.log('main start');
+    // console.log('main start');
     const {textInfoFull, graphics} = await getDetekData(STREET, HOUSE);
     const [textInfo, nowUpdateDate] = [
-        ...textInfoFull.split(UPDATE_DATE_SPLITER).map(s => s.replace(/<[^>]*>/gi, '')),
-        '00:00 00.00.0000'
+        ...textInfoFull.split(UPDATE_DATE_SPLITER),
+        '00:00 00.00.0001'
     ];
-    console.log(new Date(), lastUpdateDate, nowUpdateDate);
+    
+    // console.log('nowUpdateDate', nowUpdateDate);
+
+    // console.log(new Date(), lastUpdateDate, nowUpdateDate);
     if (nowUpdateDate !== lastUpdateDate) {
         lastUpdateDate = nowUpdateDate;
         if (textInfo === lastTextInfo && lastMessageId) {
@@ -86,13 +101,17 @@ async function main() {
         }
     }
 
+    // console.log(prepareMessageText(textInfo, nowUpdateDate, true))
+
+    // console.log('nowUpdateDate (2)', nowUpdateDate);
+
     graphics.forEach(async ({screenshotBuffer, screenshotCaptionText, stateClassList}, index) => {
         if (stateClassList === lastStateClassLists[index]) {
-            console.log('skip photo send index', index);
+            console.log('skip photo send', screenshotCaptionText);
             return;
         }
         if (stateClassList.replace(/cell-non-scheduled/g, '') === '') {
-            console.log('skip photo send empty index', index);
+            console.log('skip photo send empty', screenshotCaptionText);
             lastStateClassLists[index] = stateClassList;
             return;
         }
@@ -103,18 +122,24 @@ async function main() {
             `detek_${index}_${Date.now()}.png`
         );
         lastStateClassLists[index] = stateClassList;
-        console.log('send photo index', index);
+        console.log('send photo', screenshotCaptionText);
     });
     
 
-    console.log('main end');
+    // console.log('main end');
 }
 
 await main();
 
+async function tryMain() {
+    try {
+        await main();
+    } catch (error) {
+        console.error('Error in scheduled job:', error);
+    }
+}
 
 const rule = new schedule.RecurrenceRule();
 rule.minute = new schedule.Range(0, 59, 5); //кожні (остання цифра) хвилин
-const medocJob = schedule.scheduleJob(rule, main);
-
-console.log('end');
+const medocJob = schedule.scheduleJob(rule, tryMain);
+// console.log('end');

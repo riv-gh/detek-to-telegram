@@ -11,7 +11,8 @@ const TYPE_DELAY = 120;
 
 const DETEK_LINK = 'https://www.dtek-kem.com.ua/ua/shutdowns';
 
-const UPDATE_DATE_SPLITER = '<span class="_update_info">Дата оновлення інформації</span> – ';
+// const UPDATE_DATE_SPLITER = '<span class="_update_info">Дата оновлення інформації</span> – ';
+const UPDATE_DATE_SPLITER = 'Дата оновлення інформації – ';
 
 const HIDE_INFO_TEXT = `Якщо в даний момент у вас відсутнє світло, імовірно виникла аварійна ситуація, або діють стабілізаційні або екстрені відключення. Просимо перевірити інформацію через 15 хвилин, саме стільки часу потрібно для оновлення даних на сайті.`
 

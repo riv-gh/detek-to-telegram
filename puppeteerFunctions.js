@@ -79,7 +79,7 @@ async function getDetekData(street, house, typeDelay = TYPE_DELAY) {
         await typeText('#house_num:not([disabled])', house);
         await clickElement('#house_numautocomplete-list>div');
 
-        return (await getHTMLText('#showCurOutage')).replaceAll('<br>', '\n');
+        return (await getHTMLText('#showCurOutage')).replaceAll('<br>', '\n').replace(/<[^>]*>/gi, '');
     }
 
     browser = browser || await puppeteer.launch(browserParams);
@@ -98,6 +98,7 @@ async function getDetekData(street, house, typeDelay = TYPE_DELAY) {
     await delay(1500);
     await closeModal();
     const textInfo = await getInfoText();
+    // console.log('textInfo', textInfo);
     await delay(1500);
     await closeModal(); // на случай если модалка выскочит снова
     
@@ -112,8 +113,10 @@ async function getDetekData(street, house, typeDelay = TYPE_DELAY) {
     const stateClassList2 = await TableToListByHoursInLine('.discon-fact-table:nth-child(2) table>tbody>tr');
     const screenshotCaptionText2 = await getPlainText('.dates>.date:nth-child(2)');
 
-    // временно комментировать для тестов
+    
     await page.close();
+    // временно комментировать для тестов
+    // await browser.close();
 
     return {
         textInfoFull: textInfo, 
