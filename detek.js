@@ -38,7 +38,7 @@ async function main() {
     console.log('main start');
     const {textInfoFull, graphics} = await getDetekData(STREET, HOUSE);
     const [textInfo, nowUpdateDate] = [
-        ...textInfoFull.split(UPDATE_DATE_SPLITER),
+        ...textInfoFull.split(UPDATE_DATE_SPLITER).map(s => s.replace(/<[^>]*>/gi, '')),
         '00:00 00.00.0000'
     ];
     console.log(new Date(), lastUpdateDate, nowUpdateDate);

@@ -39,6 +39,32 @@ async function getDetekData(street, house, typeDelay = TYPE_DELAY) {
     }
 
     /**
+     * Проверяет пустая ли таблица отключений на следующий день
+     * @returns {boolean} - true если таблица пустая
+     */
+    async function nextDayTableIsEmpty() {
+        return (
+            await page.$eval('.discon-fact-table:last-child table>tbody>tr', tr => (
+                Array.from(
+                    tr.querySelectorAll('td'),
+                    td => td.classList.value
+                ).filter(cls => cls && cls!=='cell-non-scheduled').length === 0
+            ))
+        );
+    }
+
+    // async function TableToListByHours() {
+    //     return (
+    //         await page.$eval('.discon-fact-table:first-child table>tbody>tr', tr => (
+    //             Array.from(
+    //                 tr.querySelectorAll('td'),
+    //                 td => td.classList.value
+    //             ).filter(cls => cls)
+    //         ))
+    //     );
+    // }
+
+    /**
      * Вводит улицу и дом и получает текст с информацией об отключении
      * @returns {string} - текст про отключение электроэнерии
      */
@@ -48,7 +74,7 @@ async function getDetekData(street, house, typeDelay = TYPE_DELAY) {
         await typeText('#house_num:not([disabled])', house);
         await clickElement('#house_numautocomplete-list>div');
 
-        return (await getHTMLText('#showCurOutage')).replaceAll('<br>', '\n')
+        return (await getHTMLText('#showCurOutage')).replaceAll('<br>', '\n');
     }
 
     browser = browser || await puppeteer.launch(browserParams);
@@ -87,10 +113,12 @@ async function getDetekData(street, house, typeDelay = TYPE_DELAY) {
             {
                 screenshotBuffer: screenshotBuffer,
                 htmlFragment: htmlFragment,
+                // isEmpty: null,
             },
             {
                 screenshotBuffer: screenshotBuffer2,
                 htmlFragment: htmlFragment2,
+                // isEmpty: await nextDayTableisEmpty(),
             },
         ],
 

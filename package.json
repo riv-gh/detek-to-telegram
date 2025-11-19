@@ -1,14 +1,29 @@
 {
   "name": "detek-to-telegram",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "detek.js",
   "type": "module",
   "scripts": {
     "start": "node detek",
     "test": "nodemon detek"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "dtek",
+    "kyiv",
+    "kiev",
+    "electricity",
+    "power",
+    "outage",
+    "shutdowns",
+    "energy",
+    "notifications",
+    "telegram-bot"
+  ],
+  "author": {
+    "name": "daenur",
+    "email": "https://t.me/daenur0",
+    "url": "https://github.com/riv-gh"
+  },
   "license": "ISC",
   "description": "",
   "dependencies": {
@@ -18,5 +33,8 @@
     "node-schedule": "^2.1.1",
     "puppeteer": "^24.30.0",
     "sharp": "^0.34.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
   }
 }
