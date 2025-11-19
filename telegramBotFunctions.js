@@ -10,13 +10,15 @@ import {
 /**
  * Отправляет фотографию в телеграмм
  * @param {Buffer} photoBuffer - улица полностью как в детеке
+ * @param {string} caption - подпись к фотографии
  * @param {string} filename - имя файла фотографии
  * @returns {object} - response telegram api
  */
-async function sendPhoto(photoBuffer, filename = 'image.jpg') {
+async function sendPhoto(photoBuffer, caption, filename = 'image.jpg') {
     const formData = new FormData();
     formData.append('chat_id', CHAT_ID);
     formData.append('photo', photoBuffer, { filename });
+    formData.append('caption', caption);
     await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, formData, {
         headers: formData.getHeaders(),
     });

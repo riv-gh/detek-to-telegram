@@ -7,7 +7,7 @@ import {
     HOUSE,
     PHOTO_WHITE_BORDER_SIZE,
     UPDATE_DATE_SPLITER,
-    HIDE_INFO_TEXT,
+    // HIDE_INFO_TEXT,
 } from './globals.js';
 
 import {
@@ -30,7 +30,7 @@ let thisStartUpdateDate = '00:00 00.00.0000';
 let lastTextInfo = '';
 let lastMessageId = 0;
 
-const lastHTMLFragments = ['', ''];
+const lastStateClassLists = ['', ''];
 
 
 
@@ -76,14 +76,20 @@ async function main() {
         }
     }
 
-    graphics.forEach(async ({screenshotBuffer, htmlFragment}, index) => {
-        if (htmlFragment === lastHTMLFragments[index]) {
+    graphics.forEach(async ({screenshotBuffer, screenshotCaptionText, stateClassList}, index) => {
+        console.log('stateClassList', stateClassList);
+        if (stateClassList === lastStateClassLists[index]) {
             console.log('skip photo send index', index);
             return;
         }
+        if (stateClassList.replace(/cell-non-scheduled/g, '') === '') {
+            console.log('skip photo send empty index', index);
+            lastStateClassLists[index] = stateClassList;
+            return;
+        }
         const photoWithBorder = await addWhiteBorderToImage(screenshotBuffer, PHOTO_WHITE_BORDER_SIZE);
-        await sendPhoto(photoWithBorder, `detek_${index}_${Date.now()}.png`);
-        lastHTMLFragments[index] = htmlFragment;
+        await sendPhoto(photoWithBorder, screenshotCaptionText, `detek_${index}_${Date.now()}.png`);
+        lastStateClassLists[index] = stateClassList;
         console.log('send photo index', index);
     });
     

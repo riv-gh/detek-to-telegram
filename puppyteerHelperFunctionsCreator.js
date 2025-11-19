@@ -17,6 +17,10 @@ function puppeteerFunctionsCreator(page, typeDelay) {
             await page.waitForSelector(selector);
             return await page.$eval(selector, el => el.innerHTML);
         },
+        async getPlainText(selector) {
+            await page.waitForSelector(selector);
+            return await page.$eval(selector, el => el.textContent.trim());
+        },
         async getScreenshotOfElement(selector) {
             await page.waitForSelector(selector);
             const element = await page.$(selector);

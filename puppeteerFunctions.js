@@ -53,16 +53,21 @@ async function getDetekData(street, house, typeDelay = TYPE_DELAY) {
         );
     }
 
-    // async function TableToListByHours() {
-    //     return (
-    //         await page.$eval('.discon-fact-table:first-child table>tbody>tr', tr => (
-    //             Array.from(
-    //                 tr.querySelectorAll('td'),
-    //                 td => td.classList.value
-    //             ).filter(cls => cls)
-    //         ))
-    //     );
-    // }
+    /**
+     * Получает список классов из таблицы отключений по часам в строку через запятую
+     * @param {string} selctor - селектор строки таблицы ('.discon-fact-table:first-child table>tbody>tr'|'.discon-fact-table:last-child table>tbody>tr')
+     * @returns {string} - текст про отключение электроэнерии
+     */
+    async function TableToListByHoursInLine(selctor) {
+        return (
+            await page.$eval(selctor, tr => (
+                Array.from(
+                    tr.querySelectorAll('td'),
+                    td => td.classList.value
+                ).filter(cls => cls).join('')
+            ))
+        );
+    }
 
     /**
      * Вводит улицу и дом и получает текст с информацией об отключении
@@ -86,6 +91,7 @@ async function getDetekData(street, house, typeDelay = TYPE_DELAY) {
         clickElement,
         typeText,
         getHTMLText,
+        getPlainText,
         getScreenshotOfElement,
     } = puppeteerFunctionsCreator(page, typeDelay);
 
@@ -97,12 +103,14 @@ async function getDetekData(street, house, typeDelay = TYPE_DELAY) {
     
 
     const screenshotBuffer = await getScreenshotOfElement('#discon-fact');
-    const htmlFragment = await getHTMLText('#discon-fact');
+    const stateClassList = await TableToListByHoursInLine('.discon-fact-table:nth-child(1) table>tbody>tr');
+    const screenshotCaptionText = await getPlainText('.dates>.date:nth-child(1)');
 
     await clickElement('.dates .date:not(.active)');
 
     const screenshotBuffer2 = await getScreenshotOfElement('#discon-fact');
-    const htmlFragment2 = await getHTMLText('#discon-fact');
+    const stateClassList2 = await TableToListByHoursInLine('.discon-fact-table:nth-child(2) table>tbody>tr');
+    const screenshotCaptionText2 = await getPlainText('.dates>.date:nth-child(2)');
 
     // временно комментировать для тестов
     await page.close();
@@ -112,13 +120,13 @@ async function getDetekData(street, house, typeDelay = TYPE_DELAY) {
         graphics: [
             {
                 screenshotBuffer: screenshotBuffer,
-                htmlFragment: htmlFragment,
-                // isEmpty: null,
+                stateClassList: stateClassList,
+                screenshotCaptionText: screenshotCaptionText,
             },
             {
                 screenshotBuffer: screenshotBuffer2,
-                htmlFragment: htmlFragment2,
-                // isEmpty: await nextDayTableisEmpty(),
+                stateClassList: stateClassList2,
+                screenshotCaptionText: screenshotCaptionText2,
             },
         ],
 
