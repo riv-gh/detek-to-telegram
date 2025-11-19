@@ -35,6 +35,29 @@ let lastMessageId = 0;
 
 const lastStateClassLists = ['', ''];
 
+
+/** * Формирует текст сообщения для отправки или редактирования
+ * @param {string} textInfo - текстовая информация о состоянии
+ * @param {string} nowUpdateDate - дата и время последнего обновления данных
+ * @param {boolean} isEdit - флаг, указывающий, является ли это редактированием сообщения
+ * @returns {string} - подготовленный текст сообщения
+ */
+function prepareMessageText(textInfo, nowUpdateDate, isEdit = false) {
+    return (
+        highlightDatesMarkdown(
+            textInfo.includes(NOT_SHUTDONW_TEXT)
+            ? PREFIX_EMOJI.NOT_SHUTDONW
+            : PREFIX_EMOJI.SHUTDOWN +
+            textInfo.replace(HIDE_INFO_TEXT, '')
+        ) +
+        escapeMarkdownV2(
+            'Данні оновлено: \n' + 
+            isEdit ? `${thisStartUpdateDate}\n` : '' + 
+            nowUpdateDate
+        )
+    );
+}
+
 async function main() {
     console.log('main start');
     const {textInfoFull, graphics} = await getDetekData(STREET, HOUSE);
@@ -48,32 +71,13 @@ async function main() {
         if (textInfo === lastTextInfo && lastMessageId) {
             await editMessage(
                 lastMessageId,
-                highlightDatesMarkdown(
-                    textInfo.includes(NOT_SHUTDONW_TEXT)
-                    ? PREFIX_EMOJI.NOT_SHUTDONW
-                    : PREFIX_EMOJI.SHUTDOWN +
-                    textInfo.replace(HIDE_INFO_TEXT, '')
-                ) + 
-                escapeMarkdownV2(
-                    'Данні оновлено: \n' + 
-                    thisStartUpdateDate + '\n' + 
-                    nowUpdateDate
-                )
+                prepareMessageText(textInfo, nowUpdateDate, true)
             );
             console.log('edit message', lastMessageId)
         }
         else {
             const messageReturn = await sendMessage(
-                highlightDatesMarkdown(
-                    textInfo.includes(NOT_SHUTDONW_TEXT)
-                    ? PREFIX_EMOJI.NOT_SHUTDONW
-                    : PREFIX_EMOJI.SHUTDOWN +
-                    textInfo.replace(HIDE_INFO_TEXT, '')
-                ) + 
-                escapeMarkdownV2(
-                    'Данні оновлено: \n' + 
-                    nowUpdateDate
-                )
+                prepareMessageText(textInfo, nowUpdateDate, false)
             );
             lastMessageId = messageReturn?.data?.result?.message_id || 0;
             lastTextInfo = textInfo;
