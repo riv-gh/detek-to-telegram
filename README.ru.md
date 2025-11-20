@@ -21,8 +21,8 @@
 1. Создать Telegram-бота через BotFather и получить токен.
 2. Узнать chat_id (отправив сообщение боту и проверив лог).
 3. Скачать репозиторий по [Ссылке](https://github.com/riv-gh/detek-to-telegram/archive/refs/heads/master.zip) или клониуйте его `git clone https://github.com/riv-gh/detek-to-telegram.git`
-4. Перейти в папку `cd detek-to-telegram` и выполнить `npm install`
-3. Установить переменные окружения (.env) и запустить приложение при помощи `npm start`
+4. Перейти в папку `cd detek-to-telegram` и установить зависимости `npm install`
+5. Установить переменные окружения (.env) и запустить приложение при помощи `npm start`
 
 ## Переменные окружения .env
 - TELEGRAM_BOT_TOKEN - токен бота
