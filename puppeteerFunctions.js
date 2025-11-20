@@ -90,6 +90,37 @@ async function getDetekData(city, street, house, typeDelay = TYPE_DELAY) {
         return (await getHTMLText('#showCurOutage')).replaceAll('<br>', '\n').replace(/<[^>]*>/gi, '');
     }
 
+    /**
+     * Получает данные графиков отключений
+     * @param {string} screenshotElementSelector - селектор элемента для скриншота
+     * @param {string} stateClassListSelector - селектор строки таблицы для получения классов состояний по часам
+     * @param {string} captionSelector - селектор элемента для получения текста подписи к графику
+     * @returns {object} - объект с буфером скриншота, списком классов состояний и текстом подписи к графику
+     */
+    async function getGraphicDataBySelectors(screenshotElementSelector, stateClassListSelector, captionSelector) {
+        const screenshotBuffer = await getScreenshotOfElement(screenshotElementSelector);
+        const stateClassList = await TableToListByHoursInLine(stateClassListSelector);
+        const screenshotCaptionText = await getPlainText(captionSelector);
+        return {
+            screenshotBuffer,
+            stateClassList,
+            screenshotCaptionText,
+        }
+    }
+
+    /**
+     * Получает данные графика отключений по его номеру (1 или 2)
+     * @param {number} num - номер графика (1 или 2)
+     * @returns {object} - объект с буфером скриншота, списком классов состояний и текстом подписи к графику
+     */
+    async function getGraphicDataByNum(num) {
+        return await getGraphicDataBySelectors(
+            `#discon-fact`,
+            `.discon-fact-table:nth-child(${num}) table>tbody>tr`,
+            `.dates>.date:nth-child(${num})`
+        );
+    }
+
 
     browser = browser || await puppeteer.launch(browserParams);
     const page = await browser.newPage();
@@ -114,38 +145,17 @@ async function getDetekData(city, street, house, typeDelay = TYPE_DELAY) {
     const textInfo = await getInfoText();
     await delay(1500);
     await closeModal(); // на случай если модалка выскочит снова
-    
 
-    const screenshotBuffer = await getScreenshotOfElement('#discon-fact');
-    const stateClassList = await TableToListByHoursInLine('.discon-fact-table:nth-child(1) table>tbody>tr');
-    const screenshotCaptionText = await getPlainText('.dates>.date:nth-child(1)');
-
+    const graphics = [];
+    graphics.push(await getGraphicDataByNum(1));
     await clickElement('.dates .date:not(.active)');
+    graphics.push(await getGraphicDataByNum(2));
 
-    const screenshotBuffer2 = await getScreenshotOfElement('#discon-fact');
-    const stateClassList2 = await TableToListByHoursInLine('.discon-fact-table:nth-child(2) table>tbody>tr');
-    const screenshotCaptionText2 = await getPlainText('.dates>.date:nth-child(2)');
-
-    
     await page.close();
-    // временно комментировать для тестов
-    // await browser.close();
 
     return {
         textInfoFull: textInfo, 
-        graphics: [
-            {
-                screenshotBuffer: screenshotBuffer,
-                stateClassList: stateClassList,
-                screenshotCaptionText: screenshotCaptionText,
-            },
-            {
-                screenshotBuffer: screenshotBuffer2,
-                stateClassList: stateClassList2,
-                screenshotCaptionText: screenshotCaptionText2,
-            },
-        ],
-
+        graphics: graphics,
     };
 }
 
