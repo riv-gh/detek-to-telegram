@@ -19,6 +19,7 @@ const browserParams =
     ? { headless: false, defaultViewport: null, args: ['--start-maximized'] }
     : { args: ['--no-sandbox', '--disable-setuid-sandbox'] };
 
+
 /**
  * Получает текст с сайта детек (необходимы browser и browserParams)
  * @param {string} street - улица полностью как в детеке
@@ -136,6 +137,22 @@ async function getDetekData(street, house, typeDelay = TYPE_DELAY) {
     };
 }
 
+function browserIsLaunched() {
+    return browser !== null;
+}
+
+async function browserClose() {
+    try {
+        await browser.close();
+    }
+    catch { /* browser was not launched */ }
+    finally {
+        browser = null;
+    }
+}
+
 export {
     getDetekData,
+    browserIsLaunched,
+    browserClose,
 }

@@ -22,10 +22,13 @@ import {
     addWhiteBorderToImage,
     escapeMarkdownV2,
     highlightDatesMarkdown,
+    delay,
 } from './helpersFunctions.js';
 
 import {
     getDetekData,
+    browserIsLaunched,
+    browserClose,
 } from './puppeteerFunctions.js';
 
 let lastUpdateDate = '00:00 00.00.0000';
@@ -129,17 +132,23 @@ async function main() {
     // console.log('main end');
 }
 
-await main();
 
 async function tryMain() {
     try {
         await main();
     } catch (error) {
         console.error('Error in scheduled job:', error);
+        console.log('Closing browser...');
+        await browserClose();
+        await delay(5000);
+        tryMain();
     }
 }
+
+await tryMain();
+await delay(5000);
 
 const rule = new schedule.RecurrenceRule();
 rule.minute = new schedule.Range(0, 59, 5); //кожні (остання цифра) хвилин
 const medocJob = schedule.scheduleJob(rule, tryMain);
-// console.log('end');
+// // console.log('end');
