@@ -2,7 +2,9 @@ import puppeteer from 'puppeteer';
 
 import {
     DETEK_LINK,
+    DETEK_KREM_LINK,
     TYPE_DELAY,
+    DEFAULT_CITY,
 } from './globals.js';
 
 import {
@@ -22,12 +24,13 @@ const browserParams =
 
 /**
  * Получает текст с сайта детек (необходимы browser и browserParams)
+ * @param {string} city - город полностью как в детеке
  * @param {string} street - улица полностью как в детеке
  * @param {string} house - номер дома полностью
  * @param {number} typeDelay - задержка между нажатиями при "печати" (120 по умолчанию)
  * @returns {string} - текст про отключение электроэнерии
  */
-async function getDetekData(street, house, typeDelay = TYPE_DELAY) {
+async function getDetekData(city, street, house, typeDelay = TYPE_DELAY) {
     /**
      * Закрывает модальное окно если оно есть
      */
@@ -75,6 +78,10 @@ async function getDetekData(street, house, typeDelay = TYPE_DELAY) {
      * @returns {string} - текст про отключение электроэнерии
      */
     async function getInfoText() {
+        if (city !== DEFAULT_CITY) {
+            await typeText('#city', city);
+            await nativeClickElement('#cityautocomplete-list>div'); // "нативный" клик так как обычный не срабатывает
+        }
         await typeText('#street', street);
         await clickElement('#streetautocomplete-list>div');
         await typeText('#house_num:not([disabled])', house);
@@ -83,13 +90,19 @@ async function getDetekData(street, house, typeDelay = TYPE_DELAY) {
         return (await getHTMLText('#showCurOutage')).replaceAll('<br>', '\n').replace(/<[^>]*>/gi, '');
     }
 
+
     browser = browser || await puppeteer.launch(browserParams);
     const page = await browser.newPage();
     await page.setViewport({ width: 1080, height: 1024 });
-    await page.goto(DETEK_LINK);
+    await page.goto(
+        city === DEFAULT_CITY
+        ? DETEK_LINK
+        : DETEK_KREM_LINK
+    );
 
     const {
         clickElement,
+        nativeClickElement,
         typeText,
         getHTMLText,
         getPlainText,
@@ -99,7 +112,6 @@ async function getDetekData(street, house, typeDelay = TYPE_DELAY) {
     await delay(1500);
     await closeModal();
     const textInfo = await getInfoText();
-    // console.log('textInfo', textInfo);
     await delay(1500);
     await closeModal(); // на случай если модалка выскочит снова
     

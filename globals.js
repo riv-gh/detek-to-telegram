@@ -3,6 +3,9 @@ dotenv.config();
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const CHAT_ID = process.env.CHAT_ID;
+
+const DEFAULT_CITY = 'м. Київ';
+const CITY = process.env.CITY || DEFAULT_CITY;
 const STREET = process.env.STREET;
 const HOUSE = process.env.HOUSE;
 
@@ -10,6 +13,7 @@ const PHOTO_WHITE_BORDER_SIZE = 20;
 const TYPE_DELAY = 120;
 
 const DETEK_LINK = 'https://www.dtek-kem.com.ua/ua/shutdowns';
+const DETEK_KREM_LINK = 'https://www.dtek-krem.com.ua/ua/shutdowns';
 
 // const UPDATE_DATE_SPLITER = '<span class="_update_info">Дата оновлення інформації</span> – ';
 const UPDATE_DATE_SPLITER = 'Дата оновлення інформації – ';
@@ -32,11 +36,14 @@ const PREFIX_EMOJI = {
 export {
     TELEGRAM_BOT_TOKEN,
     CHAT_ID, 
+    DEFAULT_CITY,
+    CITY,
     STREET,
     HOUSE,
     PHOTO_WHITE_BORDER_SIZE,
     TYPE_DELAY,
     DETEK_LINK,
+    DETEK_KREM_LINK,
     UPDATE_DATE_SPLITER,
     HIDE_INFO_TEXT_ARRAY,
     SHUTDONW_TEXT,

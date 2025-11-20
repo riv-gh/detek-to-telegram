@@ -3,6 +3,7 @@
 import schedule from 'node-schedule';
 
 import {
+    CITY,
     STREET,
     HOUSE,
     PHOTO_WHITE_BORDER_SIZE,
@@ -68,7 +69,7 @@ function prepareMessageText(textInfo, nowUpdateDate, isEdit = false) {
 
 async function main() {
     // console.log('main start');
-    const {textInfoFull, graphics} = await getDetekData(STREET, HOUSE);
+    const {textInfoFull, graphics} = await getDetekData(CITY, STREET, HOUSE);
     const [textInfo, nowUpdateDate] = [
         ...textInfoFull.split(UPDATE_DATE_SPLITER),
         '00:00 00.00.0001'
