@@ -50,7 +50,7 @@ export CHAT_ID=-1001234567890
 npm start
 ```
 
-Windows (PowerShell):
+Example Windows (PowerShell):
 ```powershell
 $env:TELEGRAM_BOT_TOKEN = "123456:ABC-DEF..."
 $env:CHAT_ID = "-1001234567890"

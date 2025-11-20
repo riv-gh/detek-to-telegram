@@ -20,7 +20,7 @@
 
 1. Створіть Telegram-бота через BotFather і отримайте токен.
 2. Дізнайтеся chat_id (надішліть повідомлення боту і перевірте лог).
-3. Завантажте репозиторій [Завантажити ZIP](https://github.com/riv-gh/detek-to-telegram/archive/refs/heads/master.zip) або колнуйте його `git clone https://github.com/riv-gh/detek-to-telegram.git`
+3. Завантажте репозиторій [Завантажити ZIP](https://github.com/riv-gh/detek-to-telegram/archive/refs/heads/master.zip) або колонуйте його `git clone https://github.com/riv-gh/detek-to-telegram.git`
 4. Перейдіть у папку проекту `cd detek-to-telegram` та встановіть залежності `npm install`
 5. Встановіть змінні оточення та запустіть застосунок.
 
@@ -49,7 +49,7 @@ export CHAT_ID=-1001234567890
 npm start
 ```
 
-Windows (PowerShell):
+Приклад Windows (PowerShell):
 ```powershell
 $env:TELEGRAM_BOT_TOKEN = "123456:ABC-DEF..."
 $env:CHAT_ID = "-1001234567890"
