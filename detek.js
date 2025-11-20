@@ -7,8 +7,8 @@ import {
     HOUSE,
     PHOTO_WHITE_BORDER_SIZE,
     UPDATE_DATE_SPLITER,
-    HIDE_INFO_TEXT,
-    NOT_SHUTDONW_TEXT,
+    HIDE_INFO_TEXT_ARRAY,
+    SHUTDONW_TEXT,
     PREFIX_EMOJI,
 } from './globals.js';
 
@@ -23,6 +23,7 @@ import {
     escapeMarkdownV2,
     highlightDatesMarkdown,
     delay,
+    removeSubstrings,
 } from './helpersFunctions.js';
 
 import {
@@ -47,23 +48,15 @@ const lastStateClassLists = ['', ''];
  */
 function prepareMessageText(textInfo, nowUpdateDate, isEdit = false) {
     return (
-        // highlightDatesMarkdown(
-        //     textInfo.includes(NOT_SHUTDONW_TEXT)
-        //     ? PREFIX_EMOJI.NOT_SHUTDONW
-        //     : PREFIX_EMOJI.SHUTDOWN +
-        //     textInfo.replace(HIDE_INFO_TEXT, '')
-        // ) +
-        // escapeMarkdownV2(
-        //     'Данні оновлено: \n' + 
-        //     isEdit ? `${thisStartUpdateDate}\n` : '' + 
-        //     nowUpdateDate
-        // )
-
         highlightDatesMarkdown(
-            textInfo.includes(NOT_SHUTDONW_TEXT)
-            ? PREFIX_EMOJI.NOT_SHUTDONW
-            : PREFIX_EMOJI.SHUTDOWN +
-            textInfo.replace(HIDE_INFO_TEXT, '')
+            textInfo.includes(SHUTDONW_TEXT)
+            ? PREFIX_EMOJI.SHUTDONW
+            : PREFIX_EMOJI.NOT_SHUTDOWN +
+            // textInfo.replace(HIDE_INFO_TEXT, '')
+            removeSubstrings(
+                textInfo,
+                HIDE_INFO_TEXT_ARRAY
+            ),
         ) +
         escapeMarkdownV2(
             'Данні оновлено: \n' + 

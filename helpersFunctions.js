@@ -73,6 +73,17 @@ function highlightDatesMarkdown(
   return escapeMarkdownV2(inputText).replace(regex, highlightTpl);
 }
 
+/** * Удаляет из текста указанные подстроки
+ * @param {string} inputText - входящий текст
+ * @param {string[]} substrings - массив подстрок для удаления
+ * @returns {string} - текст с удалёнными подстроками
+ */
+function removeSubstrings(inputText, substrings) {
+  substrings.forEach(substring => {
+    inputText = inputText.replace(substring,'');
+  });
+  return inputText;
+}
 
 
 export {
@@ -80,4 +91,5 @@ export {
     delay,
     escapeMarkdownV2,
     highlightDatesMarkdown,
+    removeSubstrings,
 };
