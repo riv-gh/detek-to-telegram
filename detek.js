@@ -1,5 +1,3 @@
-// console.log('start');
-
 import schedule from 'node-schedule';
 
 import {
@@ -50,10 +48,7 @@ const lastStateClassLists = ['', ''];
 function prepareMessageText(textInfo, nowUpdateDate, isEdit = false) {
     return (
         highlightDatesMarkdown(
-            textInfo.includes(SHUTDONW_TEXT)
-            ? PREFIX_EMOJI.SHUTDONW
-            : PREFIX_EMOJI.NOT_SHUTDOWN +
-            // textInfo.replace(HIDE_INFO_TEXT, '')
+            (textInfo.includes(SHUTDONW_TEXT) ? PREFIX_EMOJI.SHUTDOWN : PREFIX_EMOJI.NOT_SHUTDOWN) +
             removeSubstrings(
                 textInfo,
                 HIDE_INFO_TEXT_ARRAY
@@ -68,17 +63,13 @@ function prepareMessageText(textInfo, nowUpdateDate, isEdit = false) {
 }
 
 async function main() {
-    // console.log('main start');
     const {textInfoFull, graphics} = await getDetekData(CITY, STREET, HOUSE);
     const [textInfo, nowUpdateDate] = [
         ...textInfoFull.split(UPDATE_DATE_SPLITER),
         '00:00 00.00.0001'
     ];
-    
-    // console.log('nowUpdateDate', nowUpdateDate);
 
-    // console.log(new Date(), lastUpdateDate, nowUpdateDate);
-    if (nowUpdateDate !== lastUpdateDate) {
+    if (nowUpdateDate !== lastUpdateDate) { 
         lastUpdateDate = nowUpdateDate;
         if (textInfo === lastTextInfo && lastMessageId) {
             await editMessage(
@@ -97,10 +88,6 @@ async function main() {
             console.log('send message', lastMessageId);
         }
     }
-
-    // console.log(prepareMessageText(textInfo, nowUpdateDate, true))
-
-    // console.log('nowUpdateDate (2)', nowUpdateDate);
 
     graphics.forEach(async ({screenshotBuffer, screenshotCaptionText, stateClassList}, index) => {
         if (stateClassList === lastStateClassLists[index]) {
@@ -122,8 +109,6 @@ async function main() {
         console.log('send photo', screenshotCaptionText);
     });
     
-
-    // console.log('main end');
 }
 
 
@@ -145,4 +130,3 @@ await delay(5000);
 const rule = new schedule.RecurrenceRule();
 rule.minute = new schedule.Range(0, 59, 5); //кожні (остання цифра) хвилин
 const medocJob = schedule.scheduleJob(rule, tryMain);
-// // console.log('end');
