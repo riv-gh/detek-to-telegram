@@ -20,23 +20,9 @@ A small service that forwards notifications (charts and messages) about power ou
 
 1. Create a Telegram bot via BotFather and get the token.
 2. Find out the chat_id (send a message to the bot and check the log).
-3. Set environment variables and start the application.
-
-Example (Linux/macOS):
-```
-export TELEGRAM_TOKEN=123456:ABC-DEF...
-export TELEGRAM_CHAT_ID=-1001234567890
-...
-npm start
-```
-
-Windows (PowerShell):
-```
-$env:TELEGRAM_TOKEN = "123456:ABC-DEF..."
-$env:TELEGRAM_CHAT_ID = "-1001234567890"
-...
-npm start
-```
+3. Download the repository [Download ZIP](https://github.com/riv-gh/detek-to-telegram/archive/refs/heads/master.zip) or clone it `git clone https://github.com/riv-gh/detek-to-telegram.git`
+4. Move to the project directory `cd detek-to-telegram` and install dependencies `npm install`
+5. Set environment variables and start the application `npm start`. 
 
 ## Environment variables (.env)
 - TELEGRAM_BOT_TOKEN — bot token
@@ -45,3 +31,29 @@ npm start
 - CITY — city (can be omitted for Kyiv)
 - STREET — street name
 - HOUSE — house number
+
+Example .env file (the file must be named `.env`):
+```
+TELEGRAM_BOT_TOKEN=123456:ABC-DEF..
+CHAT_ID=-1001234567890
+CITY=Kyiv
+STREET=Arsenalna St.
+HOUSE=15
+```
+
+
+Example (Linux/macOS):
+```bash
+export TELEGRAM_BOT_TOKEN=123456:ABC-DEF...
+export CHAT_ID=-1001234567890
+...
+npm start
+```
+
+Windows (PowerShell):
+```powershell
+$env:TELEGRAM_BOT_TOKEN = "123456:ABC-DEF..."
+$env:CHAT_ID = "-1001234567890"
+...
+npm start
+```

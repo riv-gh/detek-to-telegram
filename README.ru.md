@@ -20,23 +20,9 @@
 
 1. Создать Telegram-бота через BotFather и получить токен.
 2. Узнать chat_id (отправив сообщение боту и проверив лог).
-3. Установить переменные окружения и запустить приложение.
-
-Пример (Linux/macOS):
-```
-export TELEGRAM_TOKEN=123456:ABC-DEF...
-export TELEGRAM_CHAT_ID=-1001234567890
-...
-npm start
-```
-
-Windows (PowerShell):
-```
-$env:TELEGRAM_TOKEN = "123456:ABC-DEF..."
-$env:TELEGRAM_CHAT_ID = "-1001234567890"
-...
-npm start
-```
+3. Скачать репозиторий по [Ссылке](https://github.com/riv-gh/detek-to-telegram/archive/refs/heads/master.zip) или через `git clone https://github.com/riv-gh/detek-to-telegram.git`
+4. Перейти в папку `cd detek-to-telegram` и выполнить `npm install`
+3. Установить переменные окружения (.env) и запустить приложение при помощи `npm start`
 
 ## Переменные окружения .env
 - TELEGRAM_BOT_TOKEN - токен бота
@@ -45,3 +31,28 @@ npm start
 - CITY - город (в случае Киева можно не указывать)
 - STREET - название улицы
 - HOUSE - номер дома
+
+Пример .env файла (файл має мати назву `.env`):
+```
+TELEGRAM_BOT_TOKEN=123456:ABC-DEF..
+CHAT_ID=-1001234567890
+CITY=м. Київ
+STREET=вул. Арсенальна
+HOUSE=15
+```
+
+Пример (Linux/macOS):
+```bash
+export TELEGRAM_TOKEN=123456:ABC-DEF...
+export TELEGRAM_CHAT_ID=-1001234567890
+...
+npm start
+```
+
+Пример Windows (PowerShell):
+```powershell
+$env:TELEGRAM_TOKEN = "123456:ABC-DEF..."
+$env:TELEGRAM_CHAT_ID = "-1001234567890"
+...
+npm start
+```
