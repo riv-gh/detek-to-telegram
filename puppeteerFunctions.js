@@ -98,13 +98,28 @@ async function getDetekData(city, street, house, typeDelay = TYPE_DELAY) {
      * @returns {object} - объект с буфером скриншота, списком классов состояний и текстом подписи к графику
      */
     async function getGraphicDataBySelectors(screenshotElementSelector, stateClassListSelector, captionSelector) {
-        const screenshotBuffer = await getScreenshotOfElement(screenshotElementSelector);
-        const stateClassList = await TableToListByHoursInLine(stateClassListSelector);
-        const screenshotCaptionText = await getPlainText(captionSelector);
-        return {
-            screenshotBuffer,
-            stateClassList,
-            screenshotCaptionText,
+        let screenshotBuffer = null;
+        let stateClassList = null;
+        let screenshotCaptionText = null;
+        let thisError = null;
+        let isError = false;
+        try {
+            screenshotBuffer = await getScreenshotOfElement(screenshotElementSelector);
+            stateClassList = await TableToListByHoursInLine(stateClassListSelector);
+            screenshotCaptionText = await getPlainText(captionSelector);
+        }
+        catch (exc) {
+            isError = true
+            thisError = exc;
+        }
+        finally {
+            return {
+                screenshotBuffer,
+                stateClassList,
+                screenshotCaptionText,
+                isError,
+                error: thisError,
+            }
         }
     }
 

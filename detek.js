@@ -89,7 +89,14 @@ async function main() {
         }
     }
 
-    graphics.forEach(async ({screenshotBuffer, screenshotCaptionText, stateClassList}, index) => {
+    graphics.forEach(async ({
+        screenshotBuffer, screenshotCaptionText, stateClassList,
+        isError, error
+    }, index) => {
+        if (isError) {
+            console.warn(`error to screenshot ${screenshotCaptionText||''}`, error);
+            return;
+        }
         if (stateClassList === lastStateClassLists[index]) {
             console.log('skip photo send', screenshotCaptionText);
             return;
