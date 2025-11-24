@@ -8,9 +8,9 @@
 - [Русский](README.ru.md)
 - [Українська](README.uk.md)
 
-[![Screenshot of the bot in action](./docs/screenshot.png)](#)
-
 A small service that forwards notifications (charts and messages) about power outages to Telegram.
+
+[![Screenshot of the bot in action](./docs/screenshot.png)](#)
 
 ## Features
 - Forwards text notifications to a specified Telegram chat.
