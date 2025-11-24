@@ -15,10 +15,8 @@ const TYPE_DELAY = 120;
 const DETEK_LINK = 'https://www.dtek-kem.com.ua/ua/shutdowns';
 const DETEK_KREM_LINK = 'https://www.dtek-krem.com.ua/ua/shutdowns';
 
-// const UPDATE_DATE_SPLITER = '<span class="_update_info">Дата оновлення інформації</span> – ';
 const UPDATE_DATE_SPLITER = 'Дата оновлення інформації – ';
 
-// const HIDE_INFO_TEXT = `У разі відсутності світла у зоні, що гарантує його наявність (на графіку – білий колір), оформіть заявку нижче.`
 const HIDE_INFO_TEXT_ARRAY = [
     `У разі відсутності світла у зоні, що гарантує його наявність (на графіку – білий колір), оформіть заявку нижче.\n`,
     `Просимо перевірити інформацію через 15 хвилин, саме стільки часу потрібно для оновлення даних на сайті.`,

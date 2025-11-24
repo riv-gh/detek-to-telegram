@@ -55,7 +55,7 @@ function prepareMessageText(textInfo, nowUpdateDate, isEdit = false) {
             ),
         ) +
         escapeMarkdownV2(
-            'Данні оновлено: \n' + 
+            'Дані оновлено: \n' + 
             (isEdit ? `${thisStartUpdateDate}\n` : '') +
             nowUpdateDate
         )
