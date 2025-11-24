@@ -5,6 +5,7 @@ import {
     DETEK_KREM_LINK,
     TYPE_DELAY,
     DEFAULT_CITY,
+    APPEND_WEEK_DAYS,
 } from './globals.js';
 
 import {
@@ -136,6 +137,25 @@ async function getDetekData(city, street, house, typeDelay = TYPE_DELAY) {
         );
     }
 
+    async function appendWeekDaysToCurrentTable(doThis) {
+        if (!doThis) return;
+        await page.evaluate(() => {
+            const currentDayOfWeek = document.querySelector('.current-day');
+            currentDayOfWeek.removeAttribute('class');
+            const currentMaybeWeek = currentDayOfWeek.parentElement;
+            const nextMaybeWeek = currentMaybeWeek.nextElementSibling;
+
+            const toDayTable = document.querySelector(`.discon-fact-table:nth-child(1) table>tbody`);
+            const nextDayTable = document.querySelector(`.discon-fact-table:nth-child(2) table>tbody`);
+
+            toDayTable.querySelector('td').textContent = 'Сьогодні';
+            nextDayTable.querySelector('td').textContent = 'Завтра';
+
+            toDayTable.appendChild(currentMaybeWeek.cloneNode(true));
+            nextDayTable.appendChild(nextMaybeWeek.cloneNode(true));
+        });
+    }
+
 
     browser = browser || await puppeteer.launch(browserParams);
     const page = await browser.newPage();
@@ -160,6 +180,10 @@ async function getDetekData(city, street, house, typeDelay = TYPE_DELAY) {
     const textInfo = await getInfoText();
     await delay(1500);
     await closeModal(); // на случай если модалка выскочит снова
+
+
+    await appendWeekDaysToCurrentTable(APPEND_WEEK_DAYS);
+    await delay(10000);
 
     const graphics = [];
     graphics.push(await getGraphicDataByNum(1));
