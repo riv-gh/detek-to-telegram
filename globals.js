@@ -2,10 +2,17 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
-import { isMasterGitBranchOrNotFound } from './helpersFunctions.js';
+import { currentGitBranch, isMasterGitBranchOrNotFound } from './helpersFunctions.js';
 
-// в случае если ветка не master/main то использовать .env_test
-const envFile = isMasterGitBranchOrNotFound() ? '.env' : '.env_test';
+//определяем есть ли отдельный .env.* файл для текущей ветки
+const branchName = currentGitBranch();
+let branchEnvFile = `.env.${branchName}`;
+if (!fs.existsFileSync(branchEnvFile)) {
+    branchEnvFile = '.env.test';
+}
+
+// в случае если ветка не master/main то использовать .env.test (или .env.<branch>)
+const envFile = isMasterGitBranchOrNotFound() ? '.env' : branchEnvFile;
 dotenv.config({ path: envFile });
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
@@ -17,7 +24,7 @@ const STREET = process.env.STREET;
 const HOUSE = process.env.HOUSE;
 const APPEND_WEEK_DAYS = (process.env.APPEND_WEEK_DAYS === 'true');
 
-const USE_CUSTOM_STYLING = (process.env.USE_CUSTOM_STYLING === 'true') ? true : false;
+const USE_CUSTOM_STYLING = (process.env.USE_CUSTOM_STYLING === 'true');
 
 let customStyleText = '';
 if (USE_CUSTOM_STYLING) {

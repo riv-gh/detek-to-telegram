@@ -96,8 +96,8 @@ function currentGitBranch() {
     }
     return branch;
 }
-function isMasterGitBranchOrNotFound() {
-    const branch = currentGitBranch();
+function isMasterGitBranchOrNotFound(inputBranch) {
+    const branch = inputBranch || currentGitBranch();
     return (branch === 'main' || branch === 'master' || branch === 'not_found');
 }
 
@@ -108,5 +108,6 @@ export {
     escapeMarkdownV2,
     highlightDatesMarkdown,
     removeSubstrings,
+    currentGitBranch,
     isMasterGitBranchOrNotFound,
 };
