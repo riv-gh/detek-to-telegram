@@ -31,6 +31,7 @@ A small service that forwards notifications (charts and messages) about power ou
 - CITY — city (can be omitted for Kyiv)
 - STREET — street name
 - HOUSE — house number
+- USE_CUSTOM_STYLING - (true|false) whether to use additional styles from the file customPageStyle.css
 
 Example .env file (the file must be named `.env`):
 ```
@@ -39,6 +40,7 @@ CHAT_ID=-1001234567890
 CITY=Kyiv
 STREET=Arsenalna St.
 HOUSE=15
+USE_CUSTOM_STYLING=false
 ```
 
 

@@ -31,6 +31,7 @@
 - CITY - город (в случае Киева можно не указывать)
 - STREET - название улицы
 - HOUSE - номер дома
+- USE_CUSTOM_STYLING - (true|false) использовать ли дополнителные стили из файла customPageStyle.css
 
 Пример .env файла (файл має мати назву `.env`):
 ```
@@ -39,6 +40,7 @@ CHAT_ID=-1001234567890
 CITY=м. Київ
 STREET=вул. Арсенальна
 HOUSE=15
+USE_CUSTOM_STYLING=false
 ```
 
 Пример (Linux/macOS):

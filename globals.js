@@ -1,3 +1,6 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -8,6 +11,23 @@ const DEFAULT_CITY = 'м. Київ';
 const CITY = process.env.CITY || DEFAULT_CITY;
 const STREET = process.env.STREET;
 const HOUSE = process.env.HOUSE;
+
+const USE_CUSTOM_STYLING = (process.env.USE_CUSTOM_STYLING === 'true') ? true : false;
+
+let customStyleText = '';
+if (USE_CUSTOM_STYLING) {
+    const customStylePath = path.resolve(
+        path.dirname(fileURLToPath(import.meta.url)),
+        'customPageStyle.css'
+    )
+    if (fs.existsSync(customStylePath)) {
+        customStyleText = fs.readFileSync(customStylePath, 'utf-8');
+    }
+    else {
+        console.warn('Custom style file not found at:', customStylePath);
+    }
+}  
+const CUSTOM_STYLE_TEXT = customStyleText;
 
 const PHOTO_WHITE_BORDER_SIZE = 20;
 const TYPE_DELAY = 120;
@@ -38,6 +58,8 @@ export {
     CITY,
     STREET,
     HOUSE,
+    USE_CUSTOM_STYLING,
+    CUSTOM_STYLE_TEXT,
     PHOTO_WHITE_BORDER_SIZE,
     TYPE_DELAY,
     DETEK_LINK,

@@ -5,6 +5,7 @@ import {
     DETEK_KREM_LINK,
     TYPE_DELAY,
     DEFAULT_CITY,
+    CUSTOM_STYLE_TEXT,
 } from './globals.js';
 
 import {
@@ -136,6 +137,15 @@ async function getDetekData(city, street, house, typeDelay = TYPE_DELAY) {
         );
     }
 
+    /**
+     *  Добавляет кастомные стили на страницу если установен флаг USE_CUSTOM_STYLING
+     */
+    async function addCustomStylingIfNeeded() {
+        if (CUSTOM_STYLE_TEXT) {
+            await page.addStyleTag({ content: CUSTOM_STYLE_TEXT });
+        }
+    }
+
 
     browser = browser || await puppeteer.launch(browserParams);
     const page = await browser.newPage();
@@ -160,6 +170,8 @@ async function getDetekData(city, street, house, typeDelay = TYPE_DELAY) {
     const textInfo = await getInfoText();
     await delay(1500);
     await closeModal(); // на случай если модалка выскочит снова
+
+    await addCustomStylingIfNeeded(); // добавляем кастомные стили если задано
 
     const graphics = [];
     graphics.push(await getGraphicDataByNum(1));
