@@ -2,7 +2,11 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
-dotenv.config();
+import { isMasterGitBranchOrNotFound } from './helpersFunctions.js';
+
+// в случае если ветка не master/main то использовать .env_test
+const envFile = isMasterGitBranchOrNotFound() ? '.env' : '.env_test';
+dotenv.config({ path: envFile });
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const CHAT_ID = process.env.CHAT_ID;

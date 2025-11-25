@@ -1,4 +1,5 @@
 import sharp from 'sharp';
+import fs from 'fs';
 
 /**
  * Добавляет белые края к изображению из буфера
@@ -7,23 +8,23 @@ import sharp from 'sharp';
  * @returns {Buffer} - новое изображение с белыми краями
  */
 async function addWhiteBorderToImage(imageBuffer, padding = 20) {
-  const img = sharp(imageBuffer);
+    const img = sharp(imageBuffer);
 
-  // Получаем размеры исходного изображения
-  const metadata = await img.metadata();
+    // Получаем размеры исходного изображения
+    const metadata = await img.metadata();
 
-  // Создаём белый фон большего размера
-  const extended = await img
-    .extend({
-      top: padding,
-      bottom: padding,
-      left: padding,
-      right: padding,
-      background: { r: 255, g: 255, b: 255, alpha: 1 }, // белый цвет
-    })
-    .toBuffer();
+    // Создаём белый фон большего размера
+    const extended = await img
+        .extend({
+            top: padding,
+            bottom: padding,
+            left: padding,
+            right: padding,
+            background: { r: 255, g: 255, b: 255, alpha: 1 }, // белый цвет
+        })
+        .toBuffer();
 
-  return extended;
+    return extended;
 }
 
 /**
@@ -41,19 +42,19 @@ function delay(ms) {
  * @returns {string} - текст с экранированными символами
  */
 function escapeMarkdownV2(text) {
-  // список спецсимволов, которые нужно экранировать
-  const escapeChars = [
-    '_', '*', '[', ']', '(', ')', '~', '`', '>', '#',
-    '+', '-', '=', '|', '{', '}', '.', '!'
-  ];
+    // список спецсимволов, которые нужно экранировать
+    const escapeChars = [
+        '_', '*', '[', ']', '(', ')', '~', '`', '>', '#',
+        '+', '-', '=', '|', '{', '}', '.', '!'
+    ];
 
-  let escaped = text;
-  escapeChars.forEach(char => {
-    const regex = new RegExp(`\\${char}`, 'g'); // ищем все вхождения
-    escaped = escaped.replace(regex, `\\${char}`); // добавляем обратный слэш
-  });
+    let escaped = text;
+    escapeChars.forEach(char => {
+        const regex = new RegExp(`\\${char}`, 'g'); // ищем все вхождения
+        escaped = escaped.replace(regex, `\\${char}`); // добавляем обратный слэш
+    });
 
-  return escaped;
+    return escaped;
 }
 
 /**
@@ -65,12 +66,12 @@ function escapeMarkdownV2(text) {
  * @returns {string} - текст с выделенными данными в формате MarkdownV2
  */
 function highlightDatesMarkdown(
-  inputText,
-  regex = /\b([0-2]\d:[0-5]\d)\b/g,
-  highlightTpl = '__*$1*__'
+    inputText,
+    regex = /\b([0-2]\d:[0-5]\d)\b/g,
+    highlightTpl = '__*$1*__'
 ) {
-  // Заменяем найденные совпадения на выделенные в Markdown
-  return escapeMarkdownV2(inputText).replace(regex, highlightTpl);
+    // Заменяем найденные совпадения на выделенные в Markdown
+    return escapeMarkdownV2(inputText).replace(regex, highlightTpl);
 }
 
 /** * Удаляет из текста указанные подстроки
@@ -79,10 +80,25 @@ function highlightDatesMarkdown(
  * @returns {string} - текст с удалёнными подстроками
  */
 function removeSubstrings(inputText, substrings) {
-  substrings.forEach(substring => {
-    inputText = inputText.replace(substring,'');
-  });
-  return inputText;
+    substrings.forEach(substring => {
+        inputText = inputText.replace(substring, '');
+    });
+    return inputText;
+}
+
+function currentGitBranch() {
+    let branch = 'not_found';
+    try {
+        branch = execSync('git rev-parse --abbrev-ref HEAD').toString().trim();
+        console.log(`Текущая ветка: ${branch}`);
+    } catch (err) {
+        console.error('Не удалось определить ветку:', err.message);
+    }
+    return branch;
+}
+function isMasterGitBranchOrNotFound() {
+    const branch = currentGitBranch();
+    return (branch === 'main' || branch === 'master' || branch === 'not_found');
 }
 
 
@@ -92,4 +108,5 @@ export {
     escapeMarkdownV2,
     highlightDatesMarkdown,
     removeSubstrings,
+    isMasterGitBranchOrNotFound,
 };
