@@ -1,0 +1,3 @@
+#discon-fact>.dates>.date:not(.active) {
+    display: none !important;
+} 

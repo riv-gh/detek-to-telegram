@@ -8,9 +8,9 @@
 - [Русский](README.ru.md)
 - [Українська](README.uk.md)
 
-[![Скріншот роботи бота](./docs/screenshot.png)](#)
-
 Невеликий сервіс, який пересилає повідомлення (графіки та тексти) про відключення електроенергії в Telegram.
+
+[![Скріншот роботи бота](./docs/screenshot.png)](#)
 
 ## Особливості
 - Пересилка текстових повідомлень у вказаний Telegram-чат.
@@ -31,6 +31,7 @@
 - CITY — місто (для Києва можна не вказувати)
 - STREET — назва вулиці
 - HOUSE — номер будинку
+- USE_CUSTOM_STYLING - (true|false) використовувати додаткові стилі з файлу customPageStyle.css
 
 Приклад .env файлу (файл має мати назву `.env`):
 ```
@@ -39,6 +40,7 @@ CHAT_ID=-1001234567890
 CITY=м. Київ
 STREET=вул. Арсенальна
 HOUSE=15
+USE_CUSTOM_STYLING=false
 ```
 
 Приклад (Linux/macOS):
@@ -59,5 +61,11 @@ npm start
 
 Для встановлення puppeteer на Linux без графічного оточення (або Docker-конетйнер) необхідні додаткові бібліотеки
 ```bash
-apt-get install -y wget ca-certificates fonts-liberation libasound2 libatk1.0-0 libatk-bridge2.0-0 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgcc1 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libnss3 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 xdg-utilsa
+sudo apt-get update
+sudo apt-get install -y \
+  libglib2.0-0 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 \
+  libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 \
+  libxtst6 libgtk-3-0 libatk1.0-0 libatk-bridge2.0-0 libpangocairo-1.0-0 \
+  libpango-1.0-0 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 \
+  libgbm1 libasound2 libnspr4 libnss3 libstdc++6 libgcc1
 ```

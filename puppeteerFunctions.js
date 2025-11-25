@@ -6,6 +6,7 @@ import {
     TYPE_DELAY,
     DEFAULT_CITY,
     APPEND_WEEK_DAYS,
+    CUSTOM_STYLE_TEXT,
 } from './globals.js';
 
 import {
@@ -136,7 +137,9 @@ async function getDetekData(city, street, house, typeDelay = TYPE_DELAY) {
             `.dates>.date:nth-child(${num})`
         );
     }
-
+    /**
+     * Добавляет дни недели в таблицы отключений если установен флаг APPEND_WEEK_DAYS
+     */
     async function appendWeekDaysToCurrentTable(doThis) {
         if (!doThis) return;
         await page.evaluate(() => {
@@ -154,6 +157,15 @@ async function getDetekData(city, street, house, typeDelay = TYPE_DELAY) {
             toDayTable.appendChild(currentMaybeWeek.cloneNode(true));
             nextDayTable.appendChild(nextMaybeWeek.cloneNode(true));
         });
+    }
+
+    /**
+     *  Добавляет кастомные стили на страницу если установен флаг USE_CUSTOM_STYLING
+     */
+    async function addCustomStylingIfNeeded() {
+        if (CUSTOM_STYLE_TEXT) {
+            await page.addStyleTag({ content: CUSTOM_STYLE_TEXT });
+        }
     }
 
 
@@ -181,9 +193,9 @@ async function getDetekData(city, street, house, typeDelay = TYPE_DELAY) {
     await delay(1500);
     await closeModal(); // на случай если модалка выскочит снова
 
-
+    await addCustomStylingIfNeeded(); // добавляем кастомные стили если задано
+    
     await appendWeekDaysToCurrentTable(APPEND_WEEK_DAYS);
-    await delay(10000);
 
     const graphics = [];
     graphics.push(await getGraphicDataByNum(1));

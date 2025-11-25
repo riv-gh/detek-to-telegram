@@ -8,9 +8,9 @@
 - [Русский](README.ru.md)
 - [Українська](README.uk.md)
 
-[![Screenshot of the bot in action](./docs/screenshot.png)](#)
-
 A small service that forwards notifications (charts and messages) about power outages to Telegram.
+
+[![Screenshot of the bot in action](./docs/screenshot.png)](#)
 
 ## Features
 - Forwards text notifications to a specified Telegram chat.
@@ -31,6 +31,7 @@ A small service that forwards notifications (charts and messages) about power ou
 - CITY — city (can be omitted for Kyiv)
 - STREET — street name
 - HOUSE — house number
+- USE_CUSTOM_STYLING - (true|false) whether to use additional styles from the file customPageStyle.css
 
 Example .env file (the file must be named `.env`):
 ```
@@ -39,6 +40,7 @@ CHAT_ID=-1001234567890
 CITY=Kyiv
 STREET=Arsenalna St.
 HOUSE=15
+USE_CUSTOM_STYLING=false
 ```
 
 
@@ -60,5 +62,11 @@ npm start
 
 To install puppeteer on Linux without a graphical environment (or in a Docker container), additional libraries are required.
 ```bash
-apt-get install -y wget ca-certificates fonts-liberation libasound2 libatk1.0-0 libatk-bridge2.0-0 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgcc1 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libnss3 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 xdg-utilsa
+sudo apt-get update
+sudo apt-get install -y \
+  libglib2.0-0 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 \
+  libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 \
+  libxtst6 libgtk-3-0 libatk1.0-0 libatk-bridge2.0-0 libpangocairo-1.0-0 \
+  libpango-1.0-0 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 \
+  libgbm1 libasound2 libnspr4 libnss3 libstdc++6 libgcc1
 ```
