@@ -22,9 +22,12 @@ function puppeteerFunctionsCreator(page, typeDelay) {
             return await page.$eval(selector, el => el.textContent.trim());
         },
         async getScreenshotOfElement(selector) {
+            await page.setJavaScriptEnabled(false); //временно отключаем js для избегания перерисовок
             await page.waitForSelector(selector);
             const element = await page.$(selector);
-            return await element.screenshot();
+            const elementScreenshot = await element.screenshot()
+            await page.setJavaScriptEnabled(true); //возвращаем js
+            return elementScreenshot;
         }
     }
 }
