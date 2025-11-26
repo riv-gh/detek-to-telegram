@@ -1,3 +1,20 @@
+/* прячем не активную кнопку (на сьогодні|на завтара) */
 #discon-fact>.dates>.date:not(.active) {
     display: none !important;
 } 
+/* //прячем не активную кнопку (на сьогодні|на завтара) */
+
+/* убираем желтые молнии "получаосвых" ячеек графика */
+td.cell-second-half,
+td.cell-first-half {
+    background-image: none !important;
+}
+/* //убираем желтые молнии "получаосвых" ячеек графика */
+
+/* исправление "получаосвых не maybe" при добавлении недельной строки */
+#discon-fact .discon-fact-tables tbody tr:last-child td.cell-second-half::before,
+#discon-fact .discon-fact-tables tbody tr:last-child td.cell-first-half::before {
+    opacity: 0.5;
+}
+/* //исправление "получаосвых не maybe" при добавлении недельной строки */
+

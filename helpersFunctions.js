@@ -1,5 +1,6 @@
 import sharp from 'sharp';
 import fs from 'fs';
+import path from 'path';
 
 /**
  * Добавляет белые края к изображению из буфера
@@ -86,6 +87,9 @@ function removeSubstrings(inputText, substrings) {
     return inputText;
 }
 
+/** * Получает название текущий ветки в git
+ * @returns {string} - название ветки или 'not_found' если что-то пошло не так
+ */
 function currentGitBranch() {
     let branch = 'not_found';
     try {
@@ -96,9 +100,27 @@ function currentGitBranch() {
     }
     return branch;
 }
-function isMasterGitBranchOrNotFound(inputBranch) {
+
+/** * Проверка является ли ветка main|master|not_found 
+ * @param {string} inputBranch - название текущей ветки если нет попытается выполнить currentGitBranch()
+ * @returns {boolean} - подходит ли ветка
+ */
+function isMasterGitBranchOrNotFound(inputBranch = '') {
     const branch = inputBranch || currentGitBranch();
     return (branch === 'main' || branch === 'master' || branch === 'not_found');
+}
+
+/** * Удаляет из текста указанные подстроки
+ * @param {string} dir - строка пути к папке
+ * @param {RegExp} mask - маска для поиска
+ * @returns {string[]} - список файлов в папке подхдящих под маску
+ */
+function getFilesInFolderByMask(dir, mask) {
+    const files = 
+        fs.readdirSync(dir)
+        .filter(file => mask.test(file))
+        .map(file => path.join(dir, file));
+    return files;
 }
 
 
@@ -110,4 +132,5 @@ export {
     removeSubstrings,
     currentGitBranch,
     isMasterGitBranchOrNotFound,
+    getFilesInFolderByMask,
 };

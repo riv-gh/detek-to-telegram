@@ -7,6 +7,7 @@ import {
     PHOTO_WHITE_BORDER_SIZE,
     UPDATE_DATE_SPLITER,
     HIDE_INFO_TEXT_ARRAY,
+    SEND_EMPTY_SHUDOWN_DAY,
     SHUTDONW_TEXT,
     PREFIX_EMOJI,
 } from './globals.js';
@@ -101,7 +102,7 @@ async function main() {
             console.log('skip photo send', screenshotCaptionText);
             return;
         }
-        if (stateClassList.replace(/cell-non-scheduled/g, '') === '') {
+        if (SEND_EMPTY_SHUDOWN_DAY && stateClassList.replace(/cell-non-scheduled/g, '') === '') {
             console.log('skip photo send empty', screenshotCaptionText);
             lastStateClassLists[index] = stateClassList;
             return;
