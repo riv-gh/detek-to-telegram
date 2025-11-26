@@ -102,7 +102,7 @@ async function main() {
             console.log('skip photo send', screenshotCaptionText);
             return;
         }
-        if (SEND_EMPTY_SHUDOWN_DAY && stateClassList.replace(/cell-non-scheduled/g, '') === '') {
+        if (!SEND_EMPTY_SHUDOWN_DAY && stateClassList.replace(/cell-non-scheduled/g, '') === '') {
             console.log('skip photo send empty', screenshotCaptionText);
             lastStateClassLists[index] = stateClassList;
             return;
@@ -127,8 +127,8 @@ async function tryMain() {
         console.error('Error in scheduled job:', error);
         console.log('Closing browser...');
         await browserClose();
-        await delay(5000);
-        tryMain();
+        //await delay(5000);
+        //tryMain();
     }
 }
 
