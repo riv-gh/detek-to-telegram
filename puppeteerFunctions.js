@@ -141,13 +141,15 @@ async function getDetekData(city, street, house, typeDelay = TYPE_DELAY) {
      * Добавляет дни недели в таблицы отключений если установен флаг APPEND_WEEK_DAYS
      */
     async function appendWeekDaysToCurrentTable(doThis) {
-        // !!!TODO!!! перемещение на понедельник с воскресенья
         if (!doThis) return;
         await page.evaluate(() => {
             const currentDayOfWeek = document.querySelector('.current-day');
             currentDayOfWeek.removeAttribute('class');
             const currentMaybeWeek = currentDayOfWeek.parentElement;
-            const nextMaybeWeek = currentMaybeWeek.nextElementSibling;
+            const nextMaybeWeek = 
+                currentMaybeWeek.nextElementSibling || 
+                document.querySelector('#tableRenderElem tbody tr');
+                //в случае если "нет следующего дня" найти строку понедельника
 
             const toDayTable = document.querySelector(`.discon-fact-table:nth-child(1) table>tbody`);
             const nextDayTable = document.querySelector(`.discon-fact-table:nth-child(2) table>tbody`);
