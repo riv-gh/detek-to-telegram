@@ -141,6 +141,7 @@ async function getDetekData(city, street, house, typeDelay = TYPE_DELAY) {
      * Добавляет дни недели в таблицы отключений если установен флаг APPEND_WEEK_DAYS
      */
     async function appendWeekDaysToCurrentTable(doThis) {
+        // !!!TODO!!! перемещение на понедельник с воскресенья
         if (!doThis) return;
         await page.evaluate(() => {
             const currentDayOfWeek = document.querySelector('.current-day');
@@ -157,6 +158,15 @@ async function getDetekData(city, street, house, typeDelay = TYPE_DELAY) {
             toDayTable.appendChild(currentMaybeWeek.cloneNode(true));
             nextDayTable.appendChild(nextMaybeWeek.cloneNode(true));
         });
+    }
+
+    /**
+     *  Добавляет кастомные стили на страницу если установен флаг USE_CUSTOM_STYLING
+     */
+    async function addCustomStylingIfNeeded() {
+        if (CUSTOM_STYLE_TEXT) {
+            await page.addStyleTag({ content: CUSTOM_STYLE_TEXT });
+        }
     }
 
     /**
@@ -195,7 +205,7 @@ async function getDetekData(city, street, house, typeDelay = TYPE_DELAY) {
 
     await addCustomStylingIfNeeded(); // добавляем кастомные стили если задано
     
-    await appendWeekDaysToCurrentTable(APPEND_WEEK_DAYS);
+    await appendWeekDaysToCurrentTable(APPEND_WEEK_DAYS); // добовляем данные из недельной строки 
 
     const graphics = [];
     graphics.push(await getGraphicDataByNum(1));
