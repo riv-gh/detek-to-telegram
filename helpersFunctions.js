@@ -1,7 +1,7 @@
 import sharp from 'sharp';
 import fs from 'fs';
 import path from 'path';
-
+import { execSync } from 'child_process';
 /**
  * Добавляет белые края к изображению из буфера
  * @param {Buffer} imageBuffer - исходное изображение
