@@ -5,8 +5,8 @@
 /* //прячем не активную кнопку (на сьогодні|на завтара) */
 
 /* убираем желтые молнии "получаосвых" ячеек графика */
-td.cell-second-half,
-td.cell-first-half {
+.cell-second-half,
+.cell-first-half {
     background-image: none !important;
 }
 /* //убираем желтые молнии "получаосвых" ячеек графика */
