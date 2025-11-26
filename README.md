@@ -31,15 +31,17 @@ A small service that forwards notifications (charts and messages) about power ou
 - CITY — city (can be omitted for Kyiv)
 - STREET — street name
 - HOUSE — house number
+- SEND_EMPTY_SHUDOWN_DAY - (true|false) send empty shutdown day graphic image
 - USE_CUSTOM_STYLING - (true|false) whether to use additional styles from the file customPageStyle.css
 
 Example .env file (the file must be named `.env`):
 ```
 TELEGRAM_BOT_TOKEN=123456:ABC-DEF..
 CHAT_ID=-1001234567890
-CITY=Kyiv
-STREET=Arsenalna St.
+CITY=м. Київ
+STREET=вул. Арсенальна
 HOUSE=15
+SEND_EMPTY_SHUDOWN_DAY=false
 USE_CUSTOM_STYLING=false
 ```
 
