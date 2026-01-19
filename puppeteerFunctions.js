@@ -144,6 +144,7 @@ async function getDetekData(city, street, house, typeDelay = TYPE_DELAY) {
         if (!doThis) return;
         await page.evaluate(() => {
             const currentDayOfWeek = document.querySelector('.current-day');
+            if (!currentDayOfWeek) return;
             currentDayOfWeek.removeAttribute('class');
             const currentMaybeWeek = currentDayOfWeek.parentElement;
             const nextMaybeWeek = 
