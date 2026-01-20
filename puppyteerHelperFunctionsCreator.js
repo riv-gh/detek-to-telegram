@@ -7,7 +7,7 @@ function puppeteerFunctionsCreator(page, typeDelay) {
                 return true;
             }
             catch (err) {
-                console.warn(`!!! clicElement('${selector}') error`);//, err);
+                console.warn(`!!! clicElement('${selector}') error`);
             }
             return false;
         },
@@ -19,7 +19,7 @@ function puppeteerFunctionsCreator(page, typeDelay) {
                 return true;
             }
             catch (err) {
-                console.warn(`!!! nativeClickElement('${selector}') error`);//, err);
+                console.warn(`!!! nativeClickElement('${selector}') error`);
             }
             return false;
         },
@@ -29,7 +29,7 @@ function puppeteerFunctionsCreator(page, typeDelay) {
                 await page.type(selector, text, { delay: typeDelay });
             }
             catch (err) {
-                console.warn(`!!! nativeClickElement('${selector}') error`);//, err);
+                console.warn(`!!! nativeClickElement('${selector}') error`);
             }
             return false;
         },
@@ -39,7 +39,7 @@ function puppeteerFunctionsCreator(page, typeDelay) {
                 return await page.$eval(selector, el => el.innerHTML);
             }
             catch (err) {
-                console.warn(`!!! getHTMLText('${selector}') error`);//, err);
+                console.warn(`!!! getHTMLText('${selector}') error`);
             }
             return '';
         },
@@ -49,7 +49,7 @@ function puppeteerFunctionsCreator(page, typeDelay) {
                 return await page.$eval(selector, el => el.textContent.trim());
             }
             catch (err) {
-                console.warn(`!!! getPlainText('${selector}') error`);//, err);
+                console.warn(`!!! getPlainText('${selector}') error`);
             }
             return '';
         },

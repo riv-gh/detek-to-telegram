@@ -7,6 +7,7 @@ import {
     DEFAULT_CITY,
     APPEND_WEEK_DAYS,
     CUSTOM_STYLE_TEXT,
+    HIDE_INFO_TEXT_ARRAY
 } from './globals.js';
 
 import {
@@ -14,6 +15,8 @@ import {
 } from './helpersFunctions.js';
 
 import { puppeteerFunctionsCreator } from './puppyteerHelperFunctionsCreator.js';
+
+import { removeSubstrings } from './helpersFunctions.js';
 
 
 let browser = null;
@@ -202,7 +205,7 @@ async function getDetekData(city, street, house, typeDelay = TYPE_DELAY) {
 
     await delay(1500);
     await closeModal();
-    const textInfo = await getInfoText();
+    const textInfo = removeSubstrings(await getInfoText(), HIDE_INFO_TEXT_ARRAY); // очищаем текст от лишних строк до дальнейшего использования
     await delay(1500);
     await closeModal(); // на случай если модалка выскочит снова
 
