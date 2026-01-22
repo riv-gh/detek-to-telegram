@@ -31,7 +31,7 @@
 - CITY - город (в случае Киева можно не указывать)
 - STREET - название улицы
 - HOUSE - номер дома
-- SEND_EMPTY_SHUDOWN_DAY - (true|false) отправлять изображение графика без отключений
+- SEND_EMPTY_SHUTDOWN_DAY - (true|false) отправлять изображение графика без отключений
 - USE_CUSTOM_STYLING - (true|false) использовать ли дополнителные стили из файла customPageStyle.css
 
 Пример .env файла (файл має мати назву `.env`):
@@ -41,7 +41,7 @@ CHAT_ID=-1001234567890
 CITY=м. Київ
 STREET=вул. Арсенальна
 HOUSE=15
-SEND_EMPTY_SHUDOWN_DAY=false
+SEND_EMPTY_SHUTDOWN_DAY=false
 USE_CUSTOM_STYLING=false
 ```
 

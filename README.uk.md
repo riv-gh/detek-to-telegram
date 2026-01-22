@@ -31,7 +31,7 @@
 - CITY — місто (для Києва можна не вказувати)
 - STREET — назва вулиці
 - HOUSE — номер будинку
-- SEND_EMPTY_SHUDOWN_DAY - (true|false) надсилати зображення графіка без відключень
+- SEND_EMPTY_SHUTDOWN_DAY - (true|false) надсилати зображення графіка без відключень
 - USE_CUSTOM_STYLING - (true|false) використовувати додаткові стилі з файлу customPageStyle.css
 
 Приклад .env файлу (файл має мати назву `.env`):
@@ -41,7 +41,7 @@ CHAT_ID=-1001234567890
 CITY=м. Київ
 STREET=вул. Арсенальна
 HOUSE=15
-SEND_EMPTY_SHUDOWN_DAY=false
+SEND_EMPTY_SHUTDOWN_DAY=false
 USE_CUSTOM_STYLING=false
 ```
 

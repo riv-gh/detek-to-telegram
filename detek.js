@@ -5,10 +5,11 @@ import {
     STREET,
     HOUSE,
     PHOTO_WHITE_BORDER_SIZE,
-    UPDATE_DATE_SPLITER,
+    UPDATE_DATE_SPLITTER,
     HIDE_INFO_TEXT_ARRAY,
-    SEND_EMPTY_SHUDOWN_DAY,
-    SHUTDONW_TEXT,
+    SEND_EMPTY_SHUTDOWN_DAY,
+
+    SHUTDOWN_TEXT,
     PREFIX_EMOJI,
 } from './globals.js';
 
@@ -49,7 +50,7 @@ const lastStateClassLists = ['', ''];
 function prepareMessageText(textInfo, nowUpdateDate, isEdit = false) {
     return (
         highlightDatesMarkdown(
-            (textInfo.includes(SHUTDONW_TEXT) ? PREFIX_EMOJI.SHUTDOWN : PREFIX_EMOJI.NOT_SHUTDOWN) +
+            (textInfo.includes(SHUTDOWN_TEXT) ? PREFIX_EMOJI.SHUTDOWN : PREFIX_EMOJI.NOT_SHUTDOWN) +
             removeSubstrings(
                 textInfo,
                 HIDE_INFO_TEXT_ARRAY
@@ -66,7 +67,7 @@ function prepareMessageText(textInfo, nowUpdateDate, isEdit = false) {
 async function main() {
     const {textInfoFull, graphics} = await getDetekData(CITY, STREET, HOUSE);
     const [textInfo, nowUpdateDate] = [
-        ...textInfoFull.split(UPDATE_DATE_SPLITER),
+        ...textInfoFull.split(UPDATE_DATE_SPLITTER),
         '00:00 00.00.0001'
     ];
 
@@ -102,7 +103,7 @@ async function main() {
             console.log('skip photo send', screenshotCaptionText);
             return;
         }
-        if (!SEND_EMPTY_SHUDOWN_DAY && stateClassList.replace(/cell-non-scheduled/g, '') === '') {
+        if (!SEND_EMPTY_SHUTDOWN_DAY && stateClassList.replace(/cell-non-scheduled/g, '') === '') {
             console.log('skip photo send empty', screenshotCaptionText);
             lastStateClassLists[index] = stateClassList;
             return;
