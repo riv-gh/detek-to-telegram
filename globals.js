@@ -30,7 +30,7 @@ const STREET = process.env.STREET;
 const HOUSE = process.env.HOUSE;
 const APPEND_WEEK_DAYS = (process.env.APPEND_WEEK_DAYS === 'true');
 
-const SEND_EMPTY_SHUDOWN_DAY = (process.env.SEND_EMPTY_SHUDOWN_DAY === 'true');
+const SEND_EMPTY_SHUTDOWN_DAY = (process.env.SEND_EMPTY_SHUTDOWN_DAY === 'true');
 
 const USE_CUSTOM_STYLING = (process.env.USE_CUSTOM_STYLING === 'true');
 
@@ -55,7 +55,7 @@ const TYPE_DELAY = 120;
 const DETEK_LINK = 'https://www.dtek-kem.com.ua/ua/shutdowns';
 const DETEK_KREM_LINK = 'https://www.dtek-krem.com.ua/ua/shutdowns';
 
-const UPDATE_DATE_SPLITER = 'Дата оновлення інформації – ';
+const UPDATE_DATE_SPLITTER = 'Дата оновлення інформації – ';
 
 const HIDE_INFO_TEXT_ARRAY = [
     `У разі відсутності світла у зоні, що гарантує його наявність (на графіку – білий колір), оформіть заявку нижче.\n`,
@@ -63,7 +63,7 @@ const HIDE_INFO_TEXT_ARRAY = [
     `\n\nУвага!\nГрафіки стабілізаційних відключень не діють. Час відновлення світла може змінюватись відповідно до ситуації в енергосистемі та команд НЕК Укренерго`,
 ];
 
-const SHUTDONW_TEXT = `За вашою адресою в даний момент відсутня електроенергія`
+const SHUTDOWN_TEXT = `За вашою адресою в даний момент відсутня електроенергія`
 
 const PREFIX_EMOJI = {
     NOT_SHUTDOWN: '✅ ',
@@ -80,15 +80,15 @@ export {
     STREET,
     HOUSE,
     APPEND_WEEK_DAYS,
-    SEND_EMPTY_SHUDOWN_DAY,
+    SEND_EMPTY_SHUTDOWN_DAY,
     USE_CUSTOM_STYLING,
     CUSTOM_STYLE_TEXT,
     PHOTO_WHITE_BORDER_SIZE,
     TYPE_DELAY,
     DETEK_LINK,
     DETEK_KREM_LINK,
-    UPDATE_DATE_SPLITER,
+    UPDATE_DATE_SPLITTER,
     HIDE_INFO_TEXT_ARRAY,
-    SHUTDONW_TEXT,
+    SHUTDOWN_TEXT,
     PREFIX_EMOJI,
 };
