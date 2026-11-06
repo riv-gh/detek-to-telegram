@@ -70,8 +70,12 @@ async function main() {
         ...textInfoFull.split(UPDATE_DATE_SPLITTER),
         '00:00 00.00.0001'
     ];
+    if (nowUpdateDate === '00:00 00.00.0001') {
+        nowUpdateDate = lastUpdateDate;
+        console.log('!!! 00:00 00.00.0001 event');
+    }
 
-    if (nowUpdateDate !== lastUpdateDate) { 
+    if (nowUpdateDate !== lastUpdateDate) {
         lastUpdateDate = nowUpdateDate;
         if (textInfo === lastTextInfo && lastMessageId) {
             await editMessage(
