@@ -34,6 +34,9 @@ const SEND_EMPTY_SHUTDOWN_DAY = (process.env.SEND_EMPTY_SHUTDOWN_DAY === 'true')
 
 const USE_CUSTOM_STYLING = (process.env.USE_CUSTOM_STYLING === 'true');
 
+const BROWSER_EXECUTABLE_PATH = process.env.BROWSER_EXECUTABLE_PATH || null;
+
+
 let customStyleText = '';
 if (USE_CUSTOM_STYLING) {
     const customStylePath = path.resolve(
@@ -91,4 +94,5 @@ export {
     HIDE_INFO_TEXT_ARRAY,
     SHUTDOWN_TEXT,
     PREFIX_EMOJI,
+    BROWSER_EXECUTABLE_PATH,
 };

@@ -7,7 +7,8 @@ import {
     DEFAULT_CITY,
     APPEND_WEEK_DAYS,
     CUSTOM_STYLE_TEXT,
-    HIDE_INFO_TEXT_ARRAY
+    HIDE_INFO_TEXT_ARRAY,
+    BROWSER_EXECUTABLE_PATH
 } from './globals.js';
 
 import {
@@ -23,9 +24,12 @@ let browser = null;
 
 const browserParams =
     (process.platform === 'win32') //на виндовс отображем бразур для удобного тестирования
-    ? { headless: false, defaultViewport: null, args: ['--start-maximized'] }
-    : { args: ['--no-sandbox', '--disable-setuid-sandbox'] };
-
+    ?
+        { headless: false, defaultViewport: null, args: ['--start-maximized'] }
+    : 
+        BROWSER_EXECUTABLE_PATH
+        ? { args: ['--no-sandbox', '--disable-setuid-sandbox'] }
+        : { executablePath: BROWSER_EXECUTABLE_PATH, args: ['--no-sandbox', '--disable-setuid-sandbox'] }
 
 /**
  * Получает текст с сайта детек (необходимы browser и browserParams)
