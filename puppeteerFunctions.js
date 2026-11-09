@@ -14,7 +14,7 @@ import {
     delay,
 } from './helpersFunctions.js';
 
-import { puppeteerFunctionsCreator } from './puppyteerHelperFunctionsCreator.js';
+import { puppeteerFunctionsCreator } from './puppeteerHelperFunctionsCreator.js';
 
 import { removeSubstrings } from './helpersFunctions.js';
 
