@@ -27,7 +27,7 @@ const browserParams =
     ?
         { headless: false, defaultViewport: null, args: ['--start-maximized'] }
     : 
-        BROWSER_EXECUTABLE_PATH
+        !BROWSER_EXECUTABLE_PATH
         ? { args: ['--no-sandbox', '--disable-setuid-sandbox'] }
         : { executablePath: BROWSER_EXECUTABLE_PATH, args: ['--no-sandbox', '--disable-setuid-sandbox'] }
 
