@@ -236,11 +236,14 @@ function browserIsLaunched() {
 
 async function browserClose() {
     try {
+        const pid = browser.process()?.pid;
         await browser.close();
-    }
-    catch { /* browser was not launched */ }
-    finally {
+        process.kill(pid, 0);
         browser = null;
+    }
+    catch { console.error('Close error:', err); }
+    finally {
+        // browser = null;
     }
 }
 
