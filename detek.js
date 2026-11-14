@@ -124,22 +124,35 @@ async function main() {
     
 }
 
+// защита от двойного запуска, если предыдущий запуск еще не завершен
+let running = false;
 
 async function tryMain() {
     try {
-        await main();
+          if (running) {
+             console.log('Previous job still running');
+             return;
+           }
+           running = true;
+           await main();
     } catch (error) {
         console.error('Error in scheduled job:', error);
         console.log('Closing browser...');
         await browserClose();
-        //await delay(5000);
-        //tryMain();
+    }
+    finally {
+        running = false;
     }
 }
 
-await tryMain();
+// await tryMain();
 await delay(5000);
 
-const rule = new schedule.RecurrenceRule();
-rule.minute = new schedule.Range(0, 59, 5); //кожні (остання цифра) хвилин
-const medocJob = schedule.scheduleJob(rule, tryMain);
+                               // ┌──────── минута (0-59)
+                               // │ ┌────── час (0-23)
+                               // │ │ ┌──── день месяца (1-31)
+                               // │ │ │ ┌── месяц (1-12)
+                               // │ │ │ │ ┌ день недели (0-7)
+                               // │ │ │ │ │
+                               // */5 * * * *
+const job = schedule.scheduleJob('*/5 * * * *', tryMain);

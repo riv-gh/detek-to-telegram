@@ -7,14 +7,15 @@ import {
     DEFAULT_CITY,
     APPEND_WEEK_DAYS,
     CUSTOM_STYLE_TEXT,
-    HIDE_INFO_TEXT_ARRAY
+    HIDE_INFO_TEXT_ARRAY,
+    BROWSER_EXECUTABLE_PATH
 } from './globals.js';
 
 import {
     delay,
 } from './helpersFunctions.js';
 
-import { puppeteerFunctionsCreator } from './puppyteerHelperFunctionsCreator.js';
+import { puppeteerFunctionsCreator } from './puppeteerHelperFunctionsCreator.js';
 
 import { removeSubstrings } from './helpersFunctions.js';
 
@@ -23,9 +24,12 @@ let browser = null;
 
 const browserParams =
     (process.platform === 'win32') //на виндовс отображем бразур для удобного тестирования
-    ? { headless: false, defaultViewport: null, args: ['--start-maximized'] }
-    : { args: ['--no-sandbox', '--disable-setuid-sandbox'] };
-
+    ?
+        { headless: false, defaultViewport: null, args: ['--start-maximized'] }
+    : 
+        !BROWSER_EXECUTABLE_PATH
+        ? { args: ['--no-sandbox', '--disable-setuid-sandbox'] }
+        : { executablePath: BROWSER_EXECUTABLE_PATH, args: ['--no-sandbox', '--disable-setuid-sandbox' ,'--disable-dev-shm-usage' ] }
 
 /**
  * Получает текст с сайта детек (необходимы browser и browserParams)
@@ -232,13 +236,26 @@ function browserIsLaunched() {
 
 async function browserClose() {
     try {
-        await browser.close();
+        const pid = browser?.process()?.pid;
+
+        if (browser?.connected) {
+            await browser.close();
+        }
+
+        if (pid) {
+            try {
+                process.kill(pid, 'SIGKILL');
+            } catch {}
+        }
     }
-    catch { /* browser was not launched */ }
+    catch (err) {
+        console.error('Close error:', err);
+    }
     finally {
         browser = null;
     }
 }
+
 
 export {
     getDetekData,
