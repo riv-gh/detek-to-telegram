@@ -148,7 +148,6 @@ async function tryMain() {
 // await tryMain();
 await delay(5000);
 
-const schedule = require('node-schedule');
                                // ┌──────── минута (0-59)
                                // │ ┌────── час (0-23)
                                // │ │ ┌──── день месяца (1-31)
