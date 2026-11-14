@@ -4,8 +4,8 @@
   "main": "detek.js",
   "type": "module",
   "scripts": {
-    "start": "node detek",
-    "test": "nodemon detek"
+    "start": "node index.js",
+    "test": "nodemon index.js"
   },
   "keywords": [
     "dtek",
