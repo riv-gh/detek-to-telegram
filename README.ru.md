@@ -33,6 +33,7 @@
 - HOUSE - номер дома
 - SEND_EMPTY_SHUTDOWN_DAY - (true|false) отправлять изображение графика без отключений
 - USE_CUSTOM_STYLING - (true|false) использовать ли дополнителные стили из файла customPageStyle.css
+- BROWSER_EXECUTABLE_PATH - указать свой путь к браузеру при необходимости, например: /usr/bin/chromium-browser (только linux) 
 
 Пример .env файла (файл має мати назву `.env`):
 ```
