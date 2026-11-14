@@ -148,6 +148,12 @@ async function tryMain() {
 // await tryMain();
 await delay(5000);
 
-const rule = new schedule.RecurrenceRule();
-rule.minute = new schedule.Range(0, 59, 5); // каждую пятую минуту
-const medocJob = schedule.scheduleJob(rule, tryMain);
+const schedule = require('node-schedule');
+                               // ┌──────── минута (0-59)
+                               // │ ┌────── час (0-23)
+                               // │ │ ┌──── день месяца (1-31)
+                               // │ │ │ ┌── месяц (1-12)
+                               // │ │ │ │ ┌ день недели (0-7)
+                               // │ │ │ │ │
+                               // */5 * * * *
+const job = schedule.scheduleJob('*/5 * * * *', tryMain);
