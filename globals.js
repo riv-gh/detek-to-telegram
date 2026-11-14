@@ -4,6 +4,10 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import { currentGitBranch, isMasterGitBranchOrNotFound, getFilesInFolderByMask } from './helpersFunctions.js';
 
+//проверяем передан ли аргументом путь к .env файлу
+const argEnvFile = process.argv[2] ?? null;
+//pm2 start detek.js --name d2t-name -- .env.name
+
 //определяем есть ли отдельный .env.* файл для текущей ветки
 const branchName = currentGitBranch();
 let branchEnvFile = `.env.${branchName}`;
@@ -12,8 +16,10 @@ if (!fs.existsSync(branchEnvFile)) {
     // если не существует тестового файла то попробовать загрузить обычный файл
 }
 
+// если передан аргументом путь к .env файлу, то использовать его, иначе проверяем ветку
 // в случае если ветка не master/main то использовать .env.test (или .env.<branch>)
-const envFile = isMasterGitBranchOrNotFound() ? '.env' : branchEnvFile;
+const envFile = argEnvFile ?? (isMasterGitBranchOrNotFound() ? '.env' : branchEnvFile);
+
 if (!fs.existsSync(envFile)) {
     const envFileList = getFilesInFolderByMask('./', /^\.env/)
     throw Error(`Подходящий .env файл не найден!\nСписок доступных .env.* файлов:\n${envFileList.join('\n')}\n`);

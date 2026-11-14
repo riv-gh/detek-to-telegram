@@ -29,7 +29,7 @@ const browserParams =
     : 
         !BROWSER_EXECUTABLE_PATH
         ? { args: ['--no-sandbox', '--disable-setuid-sandbox'] }
-        : { executablePath: BROWSER_EXECUTABLE_PATH, args: ['--no-sandbox', '--disable-setuid-sandbox'] }
+        : { executablePath: BROWSER_EXECUTABLE_PATH, args: ['--no-sandbox', '--disable-setuid-sandbox' ,'--disable-dev-shm-usage' ] }
 
 /**
  * Получает текст с сайта детек (необходимы browser и browserParams)
@@ -236,16 +236,26 @@ function browserIsLaunched() {
 
 async function browserClose() {
     try {
-        const pid = browser.process()?.pid;
-        await browser.close();
-        process.kill(pid, 0);
+        const pid = browser?.process()?.pid;
+
+        if (browser?.connected) {
+            await browser.close();
+        }
+
+        if (pid) {
+            try {
+                process.kill(pid, 'SIGKILL');
+            } catch {}
+        }
+    }
+    catch (err) {
+        console.error('Close error:', err);
+    }
+    finally {
         browser = null;
     }
-    catch { console.error('Close error:', err); }
-    finally {
-        // browser = null;
-    }
 }
+
 
 export {
     getDetekData,
