@@ -34,7 +34,7 @@
 - SEND_EMPTY_SHUTDOWN_DAY - (true|false) отправлять изображение графика без отключений
 - USE_CUSTOM_STYLING - (true|false) использовать ли дополнителные стили из файла customPageStyle.css
 - BROWSER_EXECUTABLE_PATH - указать свой путь к браузеру при необходимости, например: /usr/bin/chromium-browser (только linux) 
-- DTEK_LINK — ссылка на сайт DTEK для вашего региона (если это не KEM или KREM), for example: https://www.dtek-dnem.com.ua/ua/shutdowns
+- DTEK_LINK — ссылка на сайт DTEK для вашего региона (если это не KEM или KREM), например: https://www.dtek-dnem.com.ua/ua/shutdowns
 
 Пример .env файла (файл має мати назву `.env`):
 ```
