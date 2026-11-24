@@ -33,6 +33,8 @@
 - HOUSE — номер будинку
 - SEND_EMPTY_SHUTDOWN_DAY - (true|false) надсилати зображення графіка без відключень
 - USE_CUSTOM_STYLING - (true|false) використовувати додаткові стилі з файлу customPageStyle.css
+- BROWSER_EXECUTABLE_PATH - вказати шлях до браузера за потреби, наприклад: /usr/bin/chromium-browser (лише linux)
+DTEK_LINK — посилання на сайт DTEK для вашого регіону (якщо це не KEM чи KREM), наприклад: https://www.dtek-dnem.com.ua/ua/shutdowns
 
 Приклад .env файлу (файл має мати назву `.env`):
 ```

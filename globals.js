@@ -62,7 +62,7 @@ const PHOTO_WHITE_BORDER_SIZE = 20;
 const TYPE_DELAY = 120;
 
 const DETEK_LINK = 'https://www.dtek-kem.com.ua/ua/shutdowns';
-const DETEK_KREM_LINK = 'https://www.dtek-krem.com.ua/ua/shutdowns';
+const DETEK_KREM_LINK = process.env.DTEK_LINK || 'https://www.dtek-krem.com.ua/ua/shutdowns';
 
 const UPDATE_DATE_SPLITTER = 'Дата оновлення інформації – ';
 

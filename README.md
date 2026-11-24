@@ -33,6 +33,8 @@ A small service that forwards notifications (charts and messages) about power ou
 - HOUSE — house number
 - SEND_EMPTY_SHUTDOWN_DAY - (true|false) send empty shutdown day graphic image
 - USE_CUSTOM_STYLING - (true|false) whether to use additional styles from the file customPageStyle.css
+- BROWSER_EXECUTABLE_PATH - specify the path to the browser (if need), for example: /usr/bin/chromium-browser (Linux only)
+- DTEK_LINK - a link to the DTEK website for your region (unless it is KEM or KREM), например: https://www.dtek-dnem.com.ua/ua/shutdowns
 
 Example .env file (the file must be named `.env`):
 ```

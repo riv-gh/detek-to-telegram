@@ -234,7 +234,7 @@ function browserIsLaunched() {
     return browser !== null;
 }
 
-async function browserClose() {
+/*async function browserClose() {
     try {
         const pid = browser?.process()?.pid;
 
@@ -254,7 +254,40 @@ async function browserClose() {
     finally {
         browser = null;
     }
+}*/
+
+async function browserClose() {
+    if (!browser) {
+        return;
+    }
+
+    const pid = browser.process()?.pid;
+
+    try {
+        if (browser.connected) {
+            await Promise.race([
+                browser.close(),
+                new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error('Browser close timeout')), 5000)
+                )
+            ]);
+        }
+    } catch (err) {
+        console.error('Browser close failed:', err);
+    } finally {
+        if (pid) {
+            try {
+                process.kill(pid, 0); // проверяем, жив ли процесс
+                process.kill(pid, 'SIGKILL');
+            } catch {
+                // процесс уже умер
+            }
+        }
+
+        browser = null;
+    }
 }
+
 
 
 export {
