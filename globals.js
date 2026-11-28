@@ -84,7 +84,8 @@ const DEFAULT_PREVIOUS_DATA = {
     lastUpdateDate: '00:00 00.00.0000',
     thisStartUpdateDate: '00:00 00.00.0000',
     lastTextInfo: '',
-    lastMessageId: 0
+    lastMessageId: 0,
+    lastStateClassLists:['', '']
 };
 
 const PREVIOUS_DATA_FILE = '_previusData.json';

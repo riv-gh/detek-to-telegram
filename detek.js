@@ -40,11 +40,14 @@ let {
     lastUpdateDate,
     thisStartUpdateDate,
     lastTextInfo,
-    lastMessageId 
+    lastMessageId,
+    lastStateClassLists
 } = loadPreviousData(
     PREVIOUS_DATA_FILE,
     DEFAULT_PREVIOUS_DATA
 );
+
+// const lastStateClassLists = ['', ''];
 
 let saved = false;
 
@@ -56,7 +59,8 @@ async function shutdown(signal) {
             lastUpdateDate, 
             thisStartUpdateDate,
             lastTextInfo,
-            lastMessageId
+            lastMessageId,
+            lastStateClassLists
         });
         saved = true;
         console.log(`Previous data saved to ${PREVIOUS_DATA_FILE}`);
@@ -72,7 +76,7 @@ process.on('SIGINT', () => shutdown('SIGINT'));
 process.on('SIGTERM', () => shutdown('SIGTERM'));
 
 
-const lastStateClassLists = ['', ''];
+
 
 
 /** * Формирует текст сообщения для отправки или редактирования

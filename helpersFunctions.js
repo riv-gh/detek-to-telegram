@@ -129,8 +129,11 @@ function getFilesInFolderByMask(dir, mask) {
  */
 function loadPreviousData(filePath = '_previusData.json', defaultPreviusData = {}) {
     if (fs.existsSync(filePath)) {
-        const data = fs.readFileSync(filePath, 'utf-8');
-        return JSON.parse(data);
+        const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+        return {
+            ...defaultPreviusData,
+            ...data,
+        };
     }
     return defaultPreviusData;
 }
