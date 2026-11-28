@@ -183,7 +183,7 @@ async function tryMain() {
     }
 }
 
-await tryMain();
+//await tryMain();
 await delay(5000);
 
                                // ┌──────── минута (0-59)
