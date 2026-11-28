@@ -88,7 +88,7 @@ const DEFAULT_PREVIOUS_DATA = {
     lastStateClassLists:['', '']
 };
 
-const PREVIOUS_DATA_FILE = '_previusData.json';
+const PREVIOUS_DATA_FILE = argEnvFile ? `_prevData[${argEnvFile}].json` : '_prevData.json';
 
 export {
     TELEGRAM_BOT_TOKEN,

@@ -1,4 +1,4 @@
 node_modules
 .env
 .env.*
-_previusData.json
+_prevData*
