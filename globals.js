@@ -80,6 +80,14 @@ const PREFIX_EMOJI = {
     LIGHTNING: '⚡ ',
 }
 
+const DEFAULT_PREVIOUS_DATA = {
+    lastUpdateDate: '00:00 00.00.0000',
+    thisStartUpdateDate: '00:00 00.00.0000',
+    lastTextInfo: '',
+    lastMessageId: 0
+};
+
+const PREVIOUS_DATA_FILE = '_previusData.json';
 
 export {
     TELEGRAM_BOT_TOKEN,
@@ -101,4 +109,6 @@ export {
     SHUTDOWN_TEXT,
     PREFIX_EMOJI,
     BROWSER_EXECUTABLE_PATH,
+    DEFAULT_PREVIOUS_DATA,
+    PREVIOUS_DATA_FILE
 };

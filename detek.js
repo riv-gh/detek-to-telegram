@@ -8,9 +8,10 @@ import {
     UPDATE_DATE_SPLITTER,
     HIDE_INFO_TEXT_ARRAY,
     SEND_EMPTY_SHUTDOWN_DAY,
-
     SHUTDOWN_TEXT,
     PREFIX_EMOJI,
+    DEFAULT_PREVIOUS_DATA,
+    PREVIOUS_DATA_FILE,
 } from './globals.js';
 
 import {
@@ -25,6 +26,8 @@ import {
     highlightDatesMarkdown,
     delay,
     removeSubstrings,
+    loadPreviousData,
+    savePreviousData,
 } from './helpersFunctions.js';
 
 import {
@@ -33,10 +36,41 @@ import {
     browserClose,
 } from './puppeteerFunctions.js';
 
-let lastUpdateDate = '00:00 00.00.0000';
-let thisStartUpdateDate = '00:00 00.00.0000';
-let lastTextInfo = '';
-let lastMessageId = 0;
+let { 
+    lastUpdateDate,
+    thisStartUpdateDate,
+    lastTextInfo,
+    lastMessageId 
+} = loadPreviousData(
+    PREVIOUS_DATA_FILE,
+    DEFAULT_PREVIOUS_DATA
+);
+
+let saved = false;
+
+async function shutdown(signal) {
+    console.log(`${signal} received`);
+
+    if (!saved) {
+        savePreviousData(PREVIOUS_DATA_FILE, {
+            lastUpdateDate, 
+            thisStartUpdateDate,
+            lastTextInfo,
+            lastMessageId
+        });
+        saved = true;
+        console.log(`Previous data saved to ${PREVIOUS_DATA_FILE}`);
+    }
+
+    server.close(() => {
+        console.log('HTTP server closed');
+        process.exit(0);
+    });
+}
+
+process.on('SIGINT', () => shutdown('SIGINT'));
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+
 
 const lastStateClassLists = ['', ''];
 
@@ -145,7 +179,7 @@ async function tryMain() {
     }
 }
 
-// await tryMain();
+await tryMain();
 await delay(5000);
 
                                // ┌──────── минута (0-59)

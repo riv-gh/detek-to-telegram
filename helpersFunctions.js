@@ -123,6 +123,25 @@ function getFilesInFolderByMask(dir, mask) {
     return files;
 }
 
+/** * Загружает предыдущие данные из файла JSON
+ * @param {string} filePath - путь к файлу JSON
+ * @param {object} defaultPreviusData - объект с данными по умолчанию
+ */
+function loadPreviousData(filePath = '_previusData.json', defaultPreviusData = {}) {
+    if (fs.existsSync(filePath)) {
+        const data = fs.readFileSync(filePath, 'utf-8');
+        return JSON.parse(data);
+    }
+    return defaultPreviusData;
+}
+
+/** * Сохраняет предыдущие данные в файл JSON
+ * @param {string} filePath - путь к файлу JSON
+ * @param {object} data - объект с данными для сохранения
+ */
+function savePreviousData(filePath = '_previusData.json', data) {
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
+}   
 
 export {
     addWhiteBorderToImage,
@@ -133,4 +152,6 @@ export {
     currentGitBranch,
     isMasterGitBranchOrNotFound,
     getFilesInFolderByMask,
+    loadPreviousData,
+    savePreviousData,
 };
